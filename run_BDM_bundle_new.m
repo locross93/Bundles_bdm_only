@@ -108,6 +108,8 @@ try
                 break
             elseif isequal(keyName,'BackSpace')
                 bid = 100;
+            elseif isequal(keyName,'DELETE')
+                bid = 100;
             elseif isequal(keyName,'q')
                 Screen('CloseAll');
                 FlushEvents
