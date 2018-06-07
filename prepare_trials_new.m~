@@ -2,13 +2,8 @@ function prepare_trials_new(subID)
 %% prepare_trials_new('888-1')
 
 close all;
-
-%Had to add this because we use seeded random number generator below and 
-%that was causing unexpected behavior. On each run of this code, it will
-%now generate different random object/bundle. This can be standardized for
-%each subject though.
-rng('shuffle'); 
-
+subj_seed = 121 + subj;
+rng(s); %Had to add this because we use seeded random number generator below and that was causing undesired behavior for 
 %Choose bundle or item for prize
 %Parse Google spreadsheet into inventory list
 inventory_spreadsheet=GetGoogleSpreadsheet('1q84oEM5O0mo-3749vGH7BrKuf5mzXFiddFsR_pe3rvQ');
@@ -19,19 +14,17 @@ end
 ItemNumber=cellfun(@str2num,inventory_spreadsheet(2:112,2));
 ItemInventory=cellfun(@str2num,inventory_spreadsheet(2:112,3));
 
-%What items are currently available
 AvailableItems=ItemNumber(ItemInventory>=1);
 
-%Choose random number to choose between bundle or item
 BundleOrItem=rand;
 
-if BundleOrItem<0.5 %If random number less than 0.5, choose single item
+if BundleOrItem<0.5
     disp('Use single item');
     ItemToUse=datasample(AvailableItems,1);
 
     fprintf('Item number %d: %s \n', ItemToUse,inventory_spreadsheet{find(ItemNumber==ItemToUse)+1,1});
     inc_bundle_ids=[];
-else %If random number greater than 0.5, choose bundle
+else
     disp('Use bundle');
     ItemsToUse=sort(datasample(AvailableItems,2,'Replace',false));
     fprintf('Item number %d: %s \n', ItemsToUse(1),inventory_spreadsheet{find(ItemNumber==ItemsToUse(1))+1,1});
