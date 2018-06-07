@@ -37,8 +37,9 @@ else %If random number greater than 0.5, choose bundle
     fprintf('Item number %d: %s \n', ItemsToUse(1),inventory_spreadsheet{find(ItemNumber==ItemsToUse(1))+1,1});
     fprintf('Item number %d: %s \n', ItemsToUse(2),inventory_spreadsheet{find(ItemNumber==ItemsToUse(2))+1,1});
     inc_bundle_ids=ItemsToUse';
-    %inc_bundle_ids = [101 117];
 end
+
+%inc_bundle_ids = [4 124];
 
 inc_food_ids = [];
 inc_trinket_ids = [];

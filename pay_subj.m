@@ -20,7 +20,7 @@ function pay_subj(subID)
 %item_id = [9 37];
 
 %005
-item_id = [101 117];
+item_id = [3 33];
 
 %800
 %item_id = [134];

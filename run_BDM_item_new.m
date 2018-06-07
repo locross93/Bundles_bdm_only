@@ -43,8 +43,7 @@ try
     
     % Start BDM
     time_zero = GetSecs;
-    %for i = 1:num_trials
-    for i=1:10
+    for i = 1:num_trials
         
         % ITI
         disp(['trial #',num2str(i),': ',num2str(item_list(i))])
