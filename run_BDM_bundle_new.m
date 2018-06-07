@@ -105,7 +105,9 @@ try
             
             %input your bid directly
             if isequal(keyName,'Return')
-                break
+                if bid~=100
+                    break
+                end
             elseif isequal(keyName,'BackSpace')
                 bid = 100;
             elseif isequal(keyName,'DELETE')

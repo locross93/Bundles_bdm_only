@@ -43,7 +43,8 @@ try
     
     % Start BDM
     time_zero = GetSecs;
-    for i = 1:num_trials
+    %for i = 1:num_trials
+    for i=1:10
         
         % ITI
         disp(['trial #',num2str(i),': ',num2str(item_list(i))])
@@ -105,7 +106,9 @@ try
             
             %input your bid directly
             if isequal(keyName,'Return')
-                break
+                if bid~=100
+                    break
+                end
             elseif isequal(keyName,'BackSpace')
                 bid = 100;
             elseif isequal(keyName,'DELETE')

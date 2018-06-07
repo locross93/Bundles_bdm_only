@@ -6,16 +6,19 @@ clearvars;
 clc;
 
 %Specify script parameters
-subID = '005-1'; %800-1 802-1 888-1
+subID = '006-1'; %800-1 802-1 888-1
 split_by_category=1;
 
 histogram_binedges=0:2:20; %Bin size of 2
 
 temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
 load(temp_file)
-bdm_item_value = value;
-bdm_item = item;
-bdm_item_category = item>71; %0 is food. 1 is trinket.
+bdm_item_value_orig = value;
+no_response_ind=bdm_item_value_orig==100;
+bdm_item_value=bdm_item_value_orig(~no_response_ind);
+bdm_item_orig = item;
+bdm_item=bdm_item_orig(~no_response_ind);
+bdm_item_category = bdm_item>71; %0 is food. 1 is trinket.
 
 
 fig1 = figure;
@@ -40,9 +43,13 @@ ylabel('Count')
 
 temp_file = ['logs/bdm_bundle_sub_',subID,'.mat'];
 load(temp_file)
-bdm_bundle_value = value;
-bdm_bundle_items = item;
+bdm_bundle_value_orig = value;
+no_response_ind=bdm_bundle_value_orig==100;
+bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
+bdm_bundle_orig = item;
+bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
 bdm_bundle_item_category = bdm_bundle_items>71; %0 is food. 1 is trinket.
+
 bdm_bundle_category=zeros(length(bdm_bundle_value),1);
 bdm_bundle_category(bdm_bundle_item_category(:,1)==0 & bdm_bundle_item_category(:,2)==0)=1; %Food bundle
 bdm_bundle_category(bdm_bundle_item_category(:,1)==0 & bdm_bundle_item_category(:,2)==1)=2; %Mixed bundle
@@ -97,20 +104,58 @@ ylabel('Count')
 %Assuming that first column is left item and 2nd column is right item.
 %Linear regression across left (x1) and right (x2) item
 %Bundle value=B1*x1+B2*x2+C
+remove_errors=0;
 for j=1:2
     for i=1:length(bdm_bundle_items(:,1))
-        bdm_bundle_item_values(i,j)=bdm_item_value(bdm_item==bdm_bundle_items(i,j));
+        if any(bdm_item==bdm_bundle_items(i,j))
+            bdm_bundle_item_values(i,j)=bdm_item_value(bdm_item==bdm_bundle_items(i,j));
+        else
+            bdm_bundle_item_values(i,j)=-1; %Error code
+            remove_errors=1;
+        end
     end
 end
+
+if remove_errors
+    error_ind=any(bdm_bundle_item_values==-1,2);
+    bdm_bundle_item_values=bdm_bundle_item_values(~error_ind);
+    bdm_bundle_value=bdm_bundle_value(~error_ind);
+end
+
 LM_leftright=fitlm(bdm_bundle_item_values,bdm_bundle_value,'VarNames',{'LeftItem','RightItem','BundleValue'})
+
+figure();
+PredictedValues=feval(LM_leftright,bdm_bundle_item_values);
+plot(PredictedValues,bdm_bundle_value,'.','MarkerSize',20);
+xlabel('Predicted value from LM');
+ylabel('Reported value');
 
 %Linear regression across food (x1) and trinket item (x2) for mixed bundles
 %Bundle value=B1*x1+B2*x2+C
 bdm_mixedbundle_value=bdm_bundle_value(bdm_bundle_category==2,:);
 bdm_mixedbundle_items=sort(bdm_bundle_items(bdm_bundle_category==2,:),2);
+remove_errors=0;
 for j=1:2
     for i=1:length(bdm_mixedbundle_items(:,1))
-        bdm_mixedbundle_item_values(i,j)=bdm_item_value(bdm_item==bdm_mixedbundle_items(i,j));
+        if any(bdm_item==bdm_mixedbundle_items(i,j))
+            bdm_mixedbundle_item_values(i,j)=bdm_item_value(bdm_item==bdm_mixedbundle_items(i,j));
+        else
+            bdm_mixedbundle_item_values(i,j)=-1;
+            remove_errors=1;
+        end
     end
 end
+
+if remove_errors
+    error_ind=any(bdm_mixedbundle_item_values==-1,2);
+    bdm_mixedbundle_item_values=bdm_mixedbundle_item_values(~error_ind);
+    bdm_mixedbundle_value=bdm_mixedbundle_value(~error_ind);
+end
+
 LM_foodtrinket=fitlm(bdm_mixedbundle_item_values,bdm_mixedbundle_value,'VarNames',{'Food','Trinket','BundleValue'})
+
+figure();
+PredictedValues=feval(LM_foodtrinket,bdm_bundle_item_values);
+plot(PredictedValues,bdm_bundle_value,'.','MarkerSize',20);
+xlabel('Predicted value from LM');
+ylabel('Reported value');
