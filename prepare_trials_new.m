@@ -39,7 +39,7 @@ else %If random number greater than 0.5, choose bundle
     inc_bundle_ids=ItemsToUse';
 end
 
-%inc_bundle_ids = [4 124];
+%inc_bundle_ids = [3 8];
 
 inc_food_ids = [];
 inc_trinket_ids = [];
@@ -86,6 +86,10 @@ combo_list_subset = combo_list(idx_rnd(1:num_trials),:);
 %include handpicked items if necessary
 if length(inc_bundle_ids > 0)
     temp = intersect(find(combo_list(:,1) == inc_bundle_ids(1)), find(combo_list(:,2) == inc_bundle_ids(2)));
+    if isempty(temp)
+        %if no match, higher number item is in first column
+        temp = intersect(find(combo_list(:,1) == inc_bundle_ids(2)), find(combo_list(:,2) == inc_bundle_ids(1)));
+    end
     if temp > num_trials
         combo_list_subset(1,:) = combo_list(temp,:);
     end
