@@ -1,0 +1,3 @@
+run_BDM_item_new('011-1')
+run_BDM_bundle_new('011-1')
+pay_subj('011-1')
