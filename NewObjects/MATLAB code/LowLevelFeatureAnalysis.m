@@ -2,7 +2,7 @@
 
 type='trinket'; %trinket or food
 
-orig_file_dir=sprintf('/Users/WhitneyGriggs/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/NewObjects/WithoutText/imgs_%s/',type);
+orig_file_dir=sprintf('/Users/WhitneyGriggs/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithoutText/imgs_%s/',type);
 
 imagesToLoad=dir([orig_file_dir '*.jpg']);
 imagesToLoad=sort_nat({imagesToLoad.name});
