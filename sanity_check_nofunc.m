@@ -1,18 +1,6 @@
-function [LM_leftright, LM_foodtrinket ] = sanity_checks4(subjectID,saveflag)
-
+subID='011-1';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
-
-if ~exist('subjectID','var')
-    disp('No subject ID input. Using default of 999-1');
-    subID= '999-1';
-else
-    subID=subjectID;
-end
-
-if ~exist('saveflag','var')
-    saveflag=0;
-end
 
 %Received from Logan 6/1/2018 WG
 %Modified to work with new pilot data 6/1/2018 WG
@@ -33,7 +21,7 @@ no_response_ind=bdm_item_value_orig==100;
 bdm_item_value=bdm_item_value_orig(~no_response_ind);
 bdm_item_orig = item;
 bdm_item=bdm_item_orig(~no_response_ind);
-bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
+bdm_item_category = bdm_item>71; %0 is food. 1 is trinket.
 
 
 fig1 = figure;
@@ -69,7 +57,7 @@ no_response_ind=bdm_bundle_value_orig==100;
 bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
 bdm_bundle_orig = item;
 bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
-bdm_bundle_item_category = bdm_bundle_items>=71; %0 is food. 1 is trinket.
+bdm_bundle_item_category = bdm_bundle_items>71; %0 is food. 1 is trinket.
 
 bdm_bundle_similarity=zeros(size(bdm_bundle_value));
 bdm_bundle_items_sort=sort(bdm_bundle_items,2);
@@ -214,31 +202,43 @@ xlim([0 max([PredictedValues; 20])])
 ylim([0 20]);
 text(0.5,18,sprintf('R2 value: %0.3f \n\\beta1: %0.3f \n\\beta2: %0.3f \n\\beta3: %0.3f', LM_foodtrinket.Rsquared.Adjusted, beta(1), beta(2),beta(3)));
 
-if saveflag
-    saveas(gcf,sprintf('Figures/sanitycheck_subject_%s_generated_%s.jpg',subID,date));
-end
 
-closeAtEnd=0;
-if closeAtEnd
-    close all
-end
 
 
 %% Subsampling to generate desired distribution
 std_bool=1;
-mdn_bool=1;
 mdn=median(bdm_item_value);
-stdev=2;
-
-while std_bool && mdn_bool
-   rdn_nums=randi(110,20,1);
-   bdm_subset_values=bdm_item_value(rdn_nums);
-   if median(bdm_subset_values)==mdn && std(bdm_subset_values)==stdev
+min_stdev=2;
+max_stdev=4;
+bin_height=5;
+counter=0;
+while std_bool
+   counter=counter+1;
+   rdn_nums_food=randi(70,10,1);
+   rdn_nums_trinket=randi(40,10,1)+70;
+   bdm_food_subset_values=bdm_item_value(rdn_nums);
+   bdm_trinket_subset_values=bdm_item_value(rdn_nums);
+   counts=histcounts(bdm_subset_values,range(bdm_subset_values));
+   
+%    pd=makedist('Uniform','Lower',min(bdm_subset_values),'Upper',max(bdm_subset_values));
+%    h=kstest(bdm_subset_values,'CDF',pd);
+   
+   if median(bdm_subset_values)==mean(bdm_subset_values) && std(bdm_subset_values)<=max_stdev && std(bdm_subset_values)>=min_stdev
        std_bool=0;
-       mdn_bool=0;
    end
-    
+   if mod(counter,1000)==0
+      counter 
+   end
+   
+   if counter==200000
+       break;
+   end
 end
-figure;
-histogram(bdm_subset_values)
+if counter~=200000
+    mdn
+    figure;
+    histogram(bdm_subset_values)
+    
+    pd=makedist('Uniform','Lower',min(bdm_subset_values),'Upper',max(bdm_subset_values));
+  h=kstest(bdm_subset_values,'CDF',pd)
 end
