@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-subID='802-1';
+subID='006-1';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
 
@@ -233,12 +233,41 @@ catch
             mean_hsv(i,j)=mean2(img_hsv(:,:,j));
         end
         
-        GradPic{i}=imgradient(img);
+ 
+        grayImage{i}=double(rgb2gray(img));
+
+       %% =======================================================
+        % get list of pixels without black background
+        %% 
+       
+        thresholdValue = 10;
+
+        
+        MaskImage=double(grayImage{i});
+        grayImage{i}(MaskImage< thresholdValue)=NaN;
+        CurrentGrayImg=grayImage{i};
+        
+   
+
+
+    %% =======================================================
+    % spatial frequency
+    %% =======================================================
+    CheckSpatial=1;
+    if CheckSpatial
+        GradPic{i}=imgradient(CurrentGrayImg); %derivatives are large near strong image edges, and small in flat regions of an image
+        GradMean(i)=nanmean(nanmean(GradPic{i})); % the higher the mean, the higher the spatial resulotion of the pic.
+
+    end
+        
+        
+        
+ 
         
         sprintf('Percent done: %0.2f percent',100*i/length(imagesToLoad))
     end
     
-    save(sprintf('%sLowVisualFeatures.mat',image_type),'mean_intensity', 'mean_luminance', 'img_contrast', 'mean_hsv')
+    save(sprintf('%sLowVisualFeatures.mat',image_type),'mean_intensity', 'mean_luminance', 'img_contrast', 'mean_hsv','GradMean')
 end
 
 [~,order]=sort(bdm_item);
@@ -295,6 +324,9 @@ ylabel('WTP value');
 
 LM_Hue=fitlm(zscore(mean_hsv(:,1)),zscore(bdm_item_value_sort(range)),'VarNames',{'Hue','ItemValue'})
 LM_ColorValue=fitlm(zscore(mean_hsv(:,3)),zscore(bdm_item_value_sort(range)),'VarNames',{'ColorValue','ItemValue'})
+LM_GradMean=fitlm(zscore(GradMean'),zscore(bdm_item_value_sort(range)),'VarNames',{'SpatFreq','ItemValue'})
+
+plot(LM_GradMean)
 
 % %% Subsampling to generate desired distribution
 % std_bool=1;

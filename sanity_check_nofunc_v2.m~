@@ -233,6 +233,56 @@ catch
             mean_hsv(i,j)=mean2(img_hsv(:,:,j));
         end
         
+        for img=1:length(StimNames) %for each image
+    if ~strcmp(StimNames(img),'109.bmp')
+                grayImage{img}=double(rgb2gray(Rgb_Img{img}));
+
+       %% =======================================================
+        % get list of pixels without black background
+        %% 
+        
+        if Mask
+            thresholdValue = 10;
+        else
+            thresholdValue=-1;
+        end
+        
+        MaskImage=double(grayImage{img});
+        grayImage{img}(MaskImage< thresholdValue)=NaN;
+        CurrentGrayImg=grayImage{img};
+        
+   
+    %% =======================================================
+    % hue saturation value
+    %%
+    HSVImage{img}=rgb2hsv(Rgb_Img{img}); 
+    
+    hue=HSVImage{img}(:,:,1); hue(MaskImage< thresholdValue)=NaN;
+    meanHue(img)=nanmean(nanmean(hue)); 
+    
+    sat=HSVImage{img}(:,:,2); sat(MaskImage< thresholdValue)=NaN;
+    meanlSaturaion(img)=nanmean(nanmean(sat));
+    
+    value=HSVImage{img}(:,:,3); value(MaskImage< thresholdValue)=NaN;
+    meanValue(img)=nanmean(nanmean(value));
+
+
+
+    %% =======================================================
+    % spatial frequency
+    %% =======================================================
+    CheckSpatial=1;
+    if CheckSpatial
+        GradPic{img}=imgradient(CurrentGrayImg); %derivatives are large near strong image edges, and small in flat regions of an image
+        GradMean(img)=nanmean(nanmean(GradPic{img})); % the higher the mean, the higher the spatial resulotion of the pic.
+
+    end
+        
+        
+        
+        
+        
+        
         GradPic{i}=imgradient(img);
         
         sprintf('Percent done: %0.2f percent',100*i/length(imagesToLoad))
