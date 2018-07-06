@@ -15,9 +15,5 @@ function draw_tics2(wpt, w, h, d)
     Screen('FillRect', wpt, [255,255,255], [0.8*w - w_dev, h_pntT - h_dev, 0.8*w + w_dev, h_pntB + h_dev]);
     DispString('draw', wpt, d(1));
     DispString('draw', wpt, d(2));
-    DispString('draw', wpt, d(3));
-    DispString('draw', wpt, d(4));
-    DispString('draw', wpt, d(5));
-    DispString('draw', wpt, d(6));
 
 end
