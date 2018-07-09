@@ -58,7 +58,7 @@ try
     Screen('Preference','TextRenderer', 1)
     
     % Preparation
-    durITI = linspace(2,9,num_trials);
+    durITI = linspace(2,7,num_trials);
     durITI = durITI(randperm(num_trials));
     durDEC = 5; durOUT = 0.5;
     %randomize where the reference monetary amount is placed
