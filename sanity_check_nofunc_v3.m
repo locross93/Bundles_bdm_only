@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-subID='006-1';
+subID='008-1';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
 

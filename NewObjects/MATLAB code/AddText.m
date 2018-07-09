@@ -1,9 +1,9 @@
 % Load files
 
-type='food'; %trinket or food
+type='trinket'; %trinket or food
 
-orig_file_dir=sprintf('/Users/WhitneyGriggs/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithoutText/imgs_%s/',type);
-save_file_dir=sprintf('/Users/WhitneyGriggs/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithText/imgs_%s/',type);
+orig_file_dir=sprintf('/Volumes/WGExpansion/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithoutText/imgs_%s/',type);
+save_file_dir=sprintf('/Volumes/WGExpansion/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithText/imgs_%s/',type);
 
 imagesToLoad=dir([orig_file_dir '*.jpg']);
 imagesToLoad=sort_nat({imagesToLoad.name});
@@ -24,7 +24,7 @@ if strcmp(type,'food')
         'Chocolate Chip Clif Bars','Blueberry Crisp Clif Bars','Yogurt Pretzels','Chocolate Pretzels','Ferrero Chocolates','Ghiradelli Chocolates'};
 else
     img_str={'A Brief History of Time book','Freakonomics book','1984 book','Water bottle','Wireless mouse','Yoga mat','Hitchhiker''s Guide to the Galaxy book','Lord of the Rings Trilogy book',...
-        'Caltech backpack','Caltech hat','Caltech banner','Caltech keychain','16GB USB stick','Caltech thermos','Caltech drawstring bag','Desk lamp','Stapler','Over-the-ear headphones','HEAD backpack',...
+        'Caltech backpack','Caltech hat','Caltech banner','Caltech keychain','16GB USB stick','Caltech mug','Caltech drawstring bag','Desk lamp','Stapler','Over-the-ear headphones','HEAD backpack',...
         'AA Batteries','Lock','Notebook','Bathroom scale','Playing cards','Honey Clementine scented candle','Rose scented candle','Umbrella','Android charger','iPhone charger','Clothes hangers','Beach towel',...
         'Cooking utensils','Silverware','Pens','Plates','Portable charger','Portable speaker','Screwdrivers','Sunglasses','Surge protector'};
 end
