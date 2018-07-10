@@ -1,9 +1,10 @@
-function run_choice(subID)
+%function run_choice(subID)
 %% run_choice('999-1')
 %% run_choice('004-3')
 
 try
-    debug = 0;
+    subID = '101-1';
+    debug = 1;
     
     %Input run number
     run_num = input('Run number: ');
@@ -54,14 +55,14 @@ try
     else
         [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]); w = rect(3); h = rect(4);
     end
-    disp(w)
-    disp(h)
     Screen('BlendFunction', wpt, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Screen('Preference','TextRenderer', 1)
     
     % Preparation
     durITI = linspace(2,7,num_trials);
     durITI = durITI(randperm(num_trials));
+    %TEMPORARY DELETE
+    durITI = 5*ones(num_trials,1);
     durDEC = 5; durOUT = 0.5;
     %randomize where the reference monetary amount is placed
     ref_pos = randi(2,1,num_trials);
@@ -84,6 +85,8 @@ try
         %fixation cross (average ~10s)
         disp(['trial #',num2str(i),': ',num2str(item_list(i,:))])
         time_ITIstrt = GetSecs - time_zero;
+        disp(catch_up)
+        disp(durITI(i)+catch_up)
         if i >= (num_trials-1)
             disp_fix(wpt, w, h, durITI(i))
         else
@@ -111,17 +114,17 @@ try
             %else its a bundle
             if item_list(i,1) < 100
                 shown_item1 = ['images/WithoutText/imgs_food/item_',num2str(item_list(i,1)),'.jpg'];
-                itm_img1 = DispImage('init', wpt, shown_item1, [-w/8.0,-h/15], w/100, [100,100]);
+                itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
             else
                 shown_item1 = ['images/WithoutText/imgs_trinkets/item_',num2str(item_list(i,1)-100),'.jpg'];
-                itm_img1 = DispImage('init', wpt, shown_item1, [-w/8.0,-h/15], w/100, [100,100]);
+                itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
             end
             if item_list(i,2) < 100
                 shown_item2 = ['images/WithoutText/imgs_food/item_',num2str(item_list(i,2)),'.jpg'];
-                itm_img2 = DispImage('init', wpt, shown_item2, [w/8.0,-h/15], w/100, [100,100]);
+                itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
             else
                 shown_item2 = ['images/WithoutText/imgs_trinkets/item_',num2str(item_list(i,2)-100),'.jpg'];
-                itm_img2 = DispImage('init', wpt, shown_item2, [w/8.0,-h/15], w/100, [100,100]);
+                itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
             end
             DispImage('draw', wpt, itm_img1);
             DispImage('draw', wpt, itm_img2);
@@ -162,9 +165,9 @@ try
         %add leftover time from last three trials together to add to final
         %fixation cross (average ~10s)
         if i >= (num_trials-1)
-            catch_up = catch_up + sum(durITI(1:i))+(durOUT*(i-1))+(durDEC*i) - time_DECend;
+            catch_up = catch_up + durDEC - (time_DECend - time_DECstrt);
         else
-            catch_up = sum(durITI(1:i))+(durOUT*(i-1))+(durDEC*i) - time_DECend;
+            catch_up = durDEC - (time_DECend - time_DECstrt);
         end
         
         % OUTCOME (FEEDBACK)
@@ -196,7 +199,7 @@ try
     time_ITI = [time_ITI; [time_ITIstrt, time_ITIend]];
     
     fname_log_time = ['logs/choice_run',num2str(run_num),'_sub_',subID,'_time'];
-    save(fname_log_time, 'time_ITI', 'time_DEC', 'time_OUT', 'durITI');
+    save(fname_log_time, 'time_ITI', 'time_DEC', 'time_OUT', 'dur_ITI');
     
     Screen('CloseAll');
 
@@ -207,5 +210,5 @@ catch
 
 end
 
-end
+%end
     

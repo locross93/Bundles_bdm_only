@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-subID='006-1';
+subID='012-1';
 saveflag=1;
 
 %Specify script parameters

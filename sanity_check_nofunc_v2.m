@@ -1,8 +1,4 @@
-clear all;
-close all;
-
-
-subID='802-1';
+subID='010-1';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
 
@@ -206,149 +202,60 @@ xlim([0 max([PredictedValues; 20])])
 ylim([0 20]);
 text(0.5,18,sprintf('R2 value: %0.3f \n\\beta1: %0.3f \n\\beta2: %0.3f \n\\beta3: %0.3f', LM_foodtrinket.Rsquared.Adjusted, beta(1), beta(2),beta(3)));
 
-%% Checking value vs visual features
 
-image_type='food'; %trinket or food
-try
-    load(sprintf('%sLowVisualFeatures.mat',image_type))
-catch
-    orig_file_dir=sprintf('/Users/WhitneyGriggs/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/Bundles_0601/GitHub_Bundles_bdm/Bundles_bdm_only/NewObjects/WithoutText/imgs_%s/',image_type);
+
+
+%% Subsampling to generate desired distribution
+std_bool=1;
+mdn=median(bdm_item_value);
+min_stdev=2;
+max_stdev=20;
+bin_height=5;
+counter=0;
+pvalue=0.1;
+while std_bool
+    counter=counter+1;
+    rdn_nums_food=randi(70,20,1);
+    rdn_nums_trinket=randi(40,20,1)+70;
+    bdm_food_subset_values=bdm_item_value(rdn_nums_food);
+    bdm_trinket_subset_values=bdm_item_value(rdn_nums_trinket);
+    bdm_subset_values=[bdm_food_subset_values; bdm_trinket_subset_values];
     
-    imagesToLoad=dir([orig_file_dir '*.jpg']);
-    imagesToLoad=sort_nat({imagesToLoad.name});
     
-    mean_intensity=zeros(length(imagesToLoad),3);
-    mean_luminance=zeros(length(imagesToLoad),1);
-    img_contrast=zeros(length(imagesToLoad),1);
-    mean_hsv=zeros(length(imagesToLoad),3);
-    for i=1:length(imagesToLoad)
-        img=imread([orig_file_dir imagesToLoad{i}]);
-        for j=1:3
-            mean_intensity(i,j)=mean2(img(:,:,j));
-        end
-        mean_luminance(i)=mean2(luminance(img));
-        img_contrast(i)=std2(luminance(img));
-        img_hsv=rgb2hsv(img);
-        for j=1:3
-            mean_hsv(i,j)=mean2(img_hsv(:,:,j));
-        end
-        
-        GradPic{i}=imgradient(img);
-        
-        sprintf('Percent done: %0.2f percent',100*i/length(imagesToLoad))
+    [counts, binedges]=histcounts(bdm_subset_values,5);
+    
+    
+    
+    pd=makedist('Uniform','Lower',1,'Upper',5);
+    [h,p]=kstest(counts,'CDF',pd);
+    
+    
+    
+    
+     %if median(bdm_subset_values)==mean(bdm_subset_values)...
+    if median(bdm_subset_values)>=4 ...
+        && std(bdm_subset_values)<=max_stdev && std(bdm_subset_values)>=min_stdev ...
+         %&& all(histcounts(bdm_food_subset_values,[0:1:20]) == histcounts(bdm_trinket_subset_values,[0:1:20]))
+    
+        % if all(histcounts(bdm_food_subset_values,[0:1:20]) == histcounts(bdm_trinket_subset_values,[0:1:20]))
+    %if p<0.001      
+        std_bool=0;
+    end
+    if mod(counter,5000)==0
+        counter
     end
     
-    save(sprintf('%sLowVisualFeatures.mat',image_type),'mean_intensity', 'mean_luminance', 'img_contrast', 'mean_hsv')
+    if counter==1000000
+        break;
+    end
 end
-
-[~,order]=sort(bdm_item);
-bdm_item_value_sort=bdm_item_value(order);
-
-if strcmp(image_type,'food')
-    range=1:70;
-else
-    range=71:110;
+if counter~=1000000
+mean(bdm_subset_values)
+median(bdm_subset_values)
+    figure;
+    histogram([bdm_food_subset_values; bdm_trinket_subset_values],binedges)
+    %plot(counts)
+    
+    pd=makedist('Uniform','Lower',min(bdm_subset_values),'Upper',max(bdm_subset_values));
+    h=kstest(bdm_subset_values,'CDF',pd)
 end
-
-figure;
-set(gcf,'units','normalized','outerposition',[0 0 1 1]);
-set(gcf,'Paperpositionmode','auto','Papersize',[20 20]);
-
-
-subplot(2,2,1)
-plot(mean_luminance,bdm_item_value_sort(range),'k.');
-title('Luminance vs value');
-xlabel('Luminance');
-ylabel('WTP Value');
-
-subplot(2,2,2)
-plot(img_contrast,bdm_item_value_sort(range),'k.');
-title('Contrast vs value');
-xlabel('Contrast');
-ylabel('WTP Value');
-
-subplot(2,2,3)
-color={'r','g','b'};
-for i=1:3
-    hold on;
-    plot(mean_intensity(:,i),bdm_item_value_sort(range),sprintf('%s.',color{i}));
-    hold off;
-end
-title('Intensity vs value');
-xlabel('Color intensity');
-ylabel('WTP Value');
-
-subplot(2,2,4)
-color={'r','g','b'};
-for i=1
-    hold on;
-    plot(mean_hsv(:,i),bdm_item_value_sort(range),sprintf('%s.',color{i}));
-    hold off;
-end
-%legend('Hue','Saturation','Brightness');
-legend('Hue');
-title('HSV vs value');
-xlabel('HSV intensity');
-ylabel('WTP value');
-
-
-
-LM_Hue=fitlm(zscore(mean_hsv(:,1)),zscore(bdm_item_value_sort(range)),'VarNames',{'Hue','ItemValue'})
-LM_ColorValue=fitlm(zscore(mean_hsv(:,3)),zscore(bdm_item_value_sort(range)),'VarNames',{'ColorValue','ItemValue'})
-
-% %% Subsampling to generate desired distribution
-% std_bool=1;
-% mdn=median(bdm_item_value);
-% min_stdev=2;
-% max_stdev=20;
-% bin_height=5;
-% counter=0;
-% pvalue=0.1;
-% while std_bool
-%     counter=counter+1;
-%     rdn_nums_food=randi(70,20,1);
-%     rdn_nums_trinket=randi(40,20,1)+70;
-%     bdm_food_subset_values=bdm_item_value(rdn_nums_food);
-%     bdm_trinket_subset_values=bdm_item_value(rdn_nums_trinket);
-%     bdm_subset_values=[bdm_food_subset_values; bdm_trinket_subset_values];
-%     
-%     
-%     [counts, binedges]=histcounts(bdm_subset_values,5);
-%     
-%     
-%     
-%     pd=makedist('Uniform','Lower',1,'Upper',5);
-%     [h,p]=kstest(counts,'CDF',pd);
-%     
-%     
-%     
-%     
-%      %if median(bdm_subset_values)==mean(bdm_subset_values)...
-%     if median(bdm_subset_values)>=4 ...
-%         && std(bdm_subset_values)<=max_stdev && std(bdm_subset_values)>=min_stdev ...
-%          %&& all(histcounts(bdm_food_subset_values,[0:1:20]) == histcounts(bdm_trinket_subset_values,[0:1:20]))
-%     
-%         % if all(histcounts(bdm_food_subset_values,[0:1:20]) == histcounts(bdm_trinket_subset_values,[0:1:20]))
-%     %if p<0.001      
-%         std_bool=0;
-%     end
-%     if mod(counter,5000)==0
-%         counter
-%     end
-%     
-%     if counter==1000000
-%         break;
-%     end
-% end
-% if counter~=1000000
-% mean(bdm_subset_values)
-% median(bdm_subset_values)
-%     figure;
-%     histogram([bdm_food_subset_values; bdm_trinket_subset_values],binedges)
-%     %plot(counts)
-%     
-%     pd=makedist('Uniform','Lower',min(bdm_subset_values),'Upper',max(bdm_subset_values));
-%     h=kstest(bdm_subset_values,'CDF',pd)
-% end
-
-
