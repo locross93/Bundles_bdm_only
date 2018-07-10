@@ -1,54 +1,54 @@
-function pay_subj_choice(subID, item_id)
-%% pay_subj_choice('999-1', [8, 102])
+function pay_subj_BDM(subID, item_id)
+%% pay_subj_BDM('999-1', [8, 102])
 
-max_price = 20;
+max_price = 10;
 
 debug = 0;
 
-run_num = 1;
-file_name= ['choice_run',num2str(run_num),'_sub_',subID];
+% Load log files
+item_list = [];
+value_list = [];
 
+file_name = ['bdm_items_sub_',subID];
 load(['logs/',file_name]);
 item_list = item;
-choice_list = choice;
+value_list = value;
 
-for run=2:5
-    file_name= ['choice_run',num2str(run),'_sub_',subID];
-    load(['logs/',file_name]);
-    item_list = [item_list; item];
-    choice_list = [choice_list; choice];
-end
+% Load log files
+bundle_list = [];
+bundle_value_list = [];
 
-sub_choice = [];
+%need to change this when you get real data
+%file_name = ['dummy_bdm_bundle_sub_',subID];
+file_name = ['bdm_bundle_sub_',subID];
+load(['logs/',file_name]);
+bundle_list = item;
+bundle_value_list = value;
+
+sub_bid = [];
 
 if length(item_id) < 2
-    for i=1:length(item_list)
-        if item_list(i,:) == [item_id, -1]
-            sub_choice = choice_list(i);
-            med_bid = median_bid_item;
-            break
-        end
-    end
-    if isempty(sub_choice)
+    idx = (item_list == item_id);
+    sub_bid = value_list(idx);
+    if isempty(sub_bid)
         disp('ERROR ITEM NOT FOUND')
     end
 else
-    for i=1:length(item_list)
-        if item_list(i,:) == item_id
-            sub_choice = choice_list(i);
-            med_bid = median_bid_bundle;
+    for i=1:length(bundle_list)
+        if bundle_list(i,:) == item_id
+            sub_bid = bundle_value_list(i);
             break
         %item ids could be flipped
-        elseif item_list(i,:) == fliplr(item_id)
-            sub_choice = choice_list(i);
-            med_bid = median_bid_bundle;
+        elseif bundle_list(i,:) == fliplr(item_id)
+            sub_bid = bundle_value_list(i);
             break
         end
     end
-    if isempty(sub_choice)
+    if isempty(sub_bid)
         disp('ERROR ITEM NOT FOUND')
     end
 end
+com_bid = floor(rand() * max_price);
 
 %%%%% Display for the subject %%%%%
 
@@ -63,9 +63,8 @@ Screen('BlendFunction', wpt, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 % Waiting
 wait_img = DispString('init', wpt, 'Wait...', [0,0], floor(h/10), [255, 255, 255], []);
 DispString('draw', wpt, wait_img); Screen(wpt,'Flip'); pause(2);
-wait_img = DispString('init', wpt, 'Choosing trial from Task 2...', [0,0], floor(h/15), [255, 255, 255], []);
+wait_img = DispString('init', wpt, 'Choosing trial from Task 1...', [0,0], floor(h/15), [255, 255, 255], []);
 DispString('draw', wpt, wait_img); Screen(wpt,'Flip'); pause(3);
-
 
 % 2nd display: "info for reward"
 if length(item_id) < 2
@@ -94,17 +93,17 @@ else
     end
 end
 
-%display subject's choice
-if sub_choice == 1
-    pay_string = ['You chose this item over $', num2str(med_bid)];
-    rwd_img = DispString('init', wpt, pay_string, [0,h*3/8], floor(h/20), [255, 255, 255], []);
+sub_bid_img = DispString('init', wpt, ['Your bid: ',num2str(sub_bid)], [0,h*1.5/8], floor(h/20), [255, 255, 255], []);
+com_bid_img = DispString('init', wpt, ['Price: ',num2str(com_bid)], [0,h*2/8], floor(h/20), [255, 255, 255], []);
+
+if sub_bid < com_bid
+    rwd_img = DispString('init', wpt, 'You do NOT get the item', [0,h*3/8], floor(h/20), [255, 255, 255], []);
 else
-    pay_string = ['You chose $', num2str(med_bid),' over this item'];
-    rwd_img = DispString('init', wpt, pay_string, [0,h*3/8], floor(h/20), [255, 255, 255], []);
+    rwd_img = DispString('init', wpt, ['You get the item and pay $',num2str(com_bid)], [0,h*3/8], floor(h/20), [255, 255, 255], []);
 end
 
-condition = 'choice';
-save(['logs/payment/payment_sub_',subID],'item_id','sub_choice','med_bid', 'condition')
+condition = 'BDM';
+save(['logs/payment/payment_sub_',subID],'item_id','sub_bid','com_bid', 'condition')
 
 if length(item_id) < 2
     DispImage('draw', wpt, itm_img); 
@@ -113,7 +112,7 @@ else
     DispImage('draw', wpt, itm_img2);
 end
 
-DispString('draw', wpt, rwd_img);
+DispString('draw', wpt, sub_bid_img); DispString('draw', wpt, com_bid_img); DispString('draw', wpt, rwd_img);
 Screen(wpt,'Flip');
 FlushEvents
 while 1
@@ -124,9 +123,9 @@ end
 
 Screen('CloseAll');
 
-disp(pay_string)
-
+if sub_bid < com_bid
+    disp('You do NOT get the item')
+else
+    disp(['You get the item and pay $',num2str(com_bid)])
 end
-
-
-
+end
