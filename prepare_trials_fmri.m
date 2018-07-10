@@ -91,7 +91,7 @@ for day=1:3
     day_subID = [fmri_subID(1:3),'-',num2str(day)];
     f_name = ['data/item_list_sub_',day_subID];
     if isequal(exist([f_name,'.mat'],'file'),0)
-        save(f_name,'bdm_item_seq','bundle_item_seq', 'choice_item_cell');
+        save(f_name,'bdm_item_seq','bundle_item_seq', 'choice_item_cell','f_items_all_days','t_items_all_days');
         disp('Done!')
     else
         disp('WARNING: The file already exists!')
