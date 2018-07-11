@@ -185,21 +185,21 @@ try
         item = [item; item_list(i,:)];
     end
     
-    %Closing screen
-    %durITI_end = 5 + catch_up;
-    durITI_end = 625 - (GetSecs - time_zero);
+    % data save and closing
+    fname_log = ['logs/choice_run',num2str(run_num),'_sub_',subID];
+    save(fname_log,'choice','item','ref_pos','median_bid_item','median_bid_bundle');
+    
+    durITI_end = 5 + catch_up;
     time_ITIstrt = GetSecs - time_zero;
     disp_fix(wpt, w, h, durITI_end)
     time_ITIend = GetSecs - time_zero;
     time_ITI = [time_ITI; [time_ITIstrt, time_ITIend]];
-    Screen('CloseAll');
     
-    % data save
-    fname_log = ['logs/choice_run',num2str(run_num),'_sub_',subID];
-    save(fname_log,'choice','item','ref_pos','median_bid_item','median_bid_bundle');
     fname_log_time = ['logs/choice_run',num2str(run_num),'_sub_',subID,'_time'];
     save(fname_log_time, 'time_ITI', 'time_DEC', 'time_OUT', 'durITI');
     
+    Screen('CloseAll');
+
 catch
     
     Screen('CloseAll');
