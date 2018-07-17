@@ -4,7 +4,7 @@ function run_choice(subID)
 
 try
     debug = 0;
-    
+    Screen('Preference', 'SkipSyncTests', 1);
     %Input run number
     run_num = input('Run number: ');
 

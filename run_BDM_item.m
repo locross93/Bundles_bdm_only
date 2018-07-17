@@ -8,7 +8,7 @@ try
     
     KbName('UnifyKeyNames');
     
-    %Screen('Preference','SkipSyncTests', 2);
+    Screen('Preference','SkipSyncTests', 1);
     
     % Load image files for the subject
     file_items = ['data/item_list_sub_',subID];

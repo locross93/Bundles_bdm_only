@@ -1,5 +1,10 @@
+clear all;
+close all;
 
-subID='101-1';
+
+subID='010-1';
+
+subID_fMRI='101-2';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
 
@@ -15,16 +20,6 @@ XTickLabels={'0-1','2-3','4-5','6-7','8-9','10-11','12-13','14-15',...
     '16-17','18-20'};
 histogram_binedges=-0.5:1:20.5; %Bin size of 2
 
-clear all;
-
-
-subID_fMRI='101-1';
-subID='010-1';
-saveflag=0;
-
-%Specify script parameters
-
-
 temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
 load(temp_file)
 bdm_item_value_orig = value;
@@ -32,7 +27,12 @@ no_response_ind=bdm_item_value_orig==100;
 bdm_item_value=bdm_item_value_orig(~no_response_ind);
 bdm_item_orig = item;
 bdm_item=bdm_item_orig(~no_response_ind);
+bdm_item_category = bdm_item>71; %0 is food. 1 is trinket.
 
+
+
+
+%Specify script parameters
 
 
 temp_file = ['data/item_list_sub_',subID_fMRI,'.mat'];
@@ -81,6 +81,7 @@ bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
 bdm_bundle_orig = item;
 bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
 bdm_bundle_item_category = bdm_bundle_items>71; %0 is food. 1 is trinket.
+
 
 bdm_bundle_similarity=zeros(size(bdm_bundle_value));
 bdm_bundle_items_sort=sort(bdm_bundle_items,2);

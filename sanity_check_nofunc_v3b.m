@@ -1,3 +1,6 @@
+clear all;
+
+
 
 subID='101-1';
 %Modified to have similarity measure as part of regression model. 6/21/18
@@ -15,16 +18,6 @@ XTickLabels={'0-1','2-3','4-5','6-7','8-9','10-11','12-13','14-15',...
     '16-17','18-20'};
 histogram_binedges=-0.5:1:20.5; %Bin size of 2
 
-clear all;
-
-
-subID_fMRI='101-1';
-subID='010-1';
-saveflag=0;
-
-%Specify script parameters
-
-
 temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
 load(temp_file)
 bdm_item_value_orig = value;
@@ -32,19 +25,7 @@ no_response_ind=bdm_item_value_orig==100;
 bdm_item_value=bdm_item_value_orig(~no_response_ind);
 bdm_item_orig = item;
 bdm_item=bdm_item_orig(~no_response_ind);
-
-
-
-temp_file = ['data/item_list_sub_',subID_fMRI,'.mat'];
-load(temp_file)
-
-bdm_item_subset_ind=ismember(bdm_item,bdm_item_seq);
-bdm_item_subset=bdm_item(bdm_item_subset_ind);
-bdm_item=bdm_item_subset;
-bdm_item_value=bdm_item_value(bdm_item_subset_ind);
-
-bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
-
+bdm_item_category = bdm_item>71; %0 is food. 1 is trinket.
 
 
 fig1 = figure;

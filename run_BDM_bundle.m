@@ -8,6 +8,8 @@ try
     
     KbName('UnifyKeyNames');
     
+    Screen('Preference','SkipSyncTests', 1);
+    
     % Load image files for the subject
     file_items = ['data/item_list_sub_',subID];
     load(file_items) % item_ids is loaded
