@@ -2,14 +2,22 @@ function run_Familiarity_new(subID)
 %%
 % run_BDM('150424a')
 Screen('Preference', 'SkipSyncTests', 1)
-debug=1;
+debug=0;
 
+if length(subID)>3
+    subID=subID(1:3);
+end
+    
 try
 
     % Load image files for the subject
-    load(['data/item_list_sub_', subID]) % item_ids is loaded
-    idx_rnd = randperm(length(bdm_item_seq));
-    item_rnd_idx = bdm_item_seq(idx_rnd);
+    for run=1:3
+        load(['data/item_list_sub_', subID,'-',run]) % item_ids is loaded
+        
+        
+        %idx_rnd = randperm(length(bdm_item_seq));
+        item_rnd_idx = bdm_item_seq(idx_rnd);
+    end
     
     % Set window pointer
     [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);

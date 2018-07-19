@@ -1,43 +1,26 @@
 function run_Familiarity(subID)
 %%
 % run_BDM('150424a')
-Screen('Preference', 'SkipSyncTests', 1)
-debug=0;
-
-if length(subID)>3
-    subID=subID(1:3);
-end
 
 try
-    all_items=[]
+
     % Load image files for the subject
-    for run=1:3
-        load(['data/item_list_sub_', subID,'-',num2str(run)]) % item_ids is loaded
-        all_items=[all_items bdm_item_seq]
-    end
-    
-    all_items=unique(all_items);
-    idx_rnd = randperm(length(all_items));
-    item_rnd_idx = all_items(idx_rnd);
+    load(['data/item_list_sub_', subID]) % item_ids is loaded
+    idx_rnd = randperm(length(data_id_new));
+    item_rnd_idx = data_id_new(idx_rnd);
     
     % Set window pointer
-    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);
-    w = rect(3);
-    h = rect(4);
+    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
     %[wpt, rect] = Screen('OpenWindow', 1, [0, 0, 0]); w = rect(3); h = rect(4);
     Screen('BlendFunction', wpt, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     % Preparation
     durITI = 0.5;
-    if debug
-        num_trials=10;
-    else
-        num_trials = length(item_rnd_idx);
-    end
+    num_trials = length(item_rnd_idx);
     %num_trials = 10;
     d_tics = prep_tics2(wpt, w, h);
     w_bin = linspace(w * 0.2, w * 0.8, 30);
-    str_question = DispString('init', wpt, 'How familiar is the item?', [0,-h/2.5], floor(h/17), [255, 255, 255], []);
+    str_question = DispString('init', wpt, 'How Familiar Is the Item?', [0,-h/2.75], floor(h/17), [255, 255, 255], []);
     
     % Prepare data
     time_ITI = []; time_DEC = [];
@@ -58,39 +41,28 @@ try
         time_ITI = [time_ITI; [time_ITIstrt, time_ITIend]];
         
         % BDM
-        if item_rnd_idx(i)<71
-            shown_item = ['data/WithText/imgs_food/item_',num2str(item_rnd_idx(i)),'.jpg'];
-        else
-            shown_item = ['data/WithText/imgs_trinkets/item_',num2str(item_rnd_idx(i)-100),'.jpg'];
-        end
+        shown_item = ['data/imgs/item_',num2str(item_rnd_idx(i)),'.jpg'];
         itm_img = DispImage('init', wpt, shown_item, [0,-h/15], w/50, [100,100]);
         
         target = ceil(rand() * length(w_bin));
-        init_valueBDM = 4 * (target - 1) / (length(w_bin) - 1);
-        numL_tmp = 0; numR_tmp = 0;
+        init_valueBDM = 4 * (target - 1) / (length(w_bin) - 1);numL_tmp = 0; numR_tmp = 0;
         
         FlushEvents
         time_DECstrt = GetSecs - time_zero;
         while 1
             DispImage('draw', wpt, itm_img);
             DispString('draw', wpt, str_question);
-            draw_tics3(wpt, w, h, d_tics)
+            draw_tics2(wpt, w, h, d_tics)
             Screen('FillRect', wpt, [255,0,0], [w_bin(target) - 0.015 * w, 0.71 * h ,w_bin(target) + 0.015 * w, 0.78 * h]);
             Screen(wpt,'Flip');
             
             keyRes = GetChar;
-            [keyIsDown,secs,keyCode] = KbCheck;
-            keyName = KbName(find(keyCode));
-            if isequal(keyName,'Return')
+            if isequal(keyRes,'3')
                 break
             elseif isequal(keyRes,'1')
                 target = target - 1; numL_tmp = numL_tmp + 1; if target < 1, target = 1; end
             elseif isequal(keyRes,'2')
                 target = target + 1; numR_tmp = numR_tmp + 1; if target > length(w_bin), target = length(w_bin); end
-            elseif isequal(keyName,'q')
-                Screen('CloseAll');
-                FlushEvents
-                break 
             end
             FlushEvents
         end

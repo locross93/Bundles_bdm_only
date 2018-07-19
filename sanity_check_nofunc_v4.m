@@ -4,7 +4,7 @@ close all;
 
 subID='010-1';
 
-subID_fMRI='101-2';
+subID_fMRI='101-3';
 %Modified to have similarity measure as part of regression model. 6/21/18
 %WG
 

@@ -1,8 +1,8 @@
-function run_Familiarity(subID)
+function run_Familiarity_new_v2(subID)
 %%
 % run_BDM('150424a')
 Screen('Preference', 'SkipSyncTests', 1)
-debug=0;
+debug=1;
 
 if length(subID)>3
     subID=subID(1:3);
@@ -12,7 +12,7 @@ try
     all_items=[]
     % Load image files for the subject
     for run=1:3
-        load(['data/item_list_sub_', subID,'-',num2str(run)]) % item_ids is loaded
+        load(['data/item_list_sub_', subID,'-',run]) % item_ids is loaded
         all_items=[all_items bdm_item_seq]
     end
     

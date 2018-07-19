@@ -11,7 +11,7 @@ function pay_subj(subID)
 %item_id = [9 37];
 
 %004
-item_id = [34 129];
+item_id = [5 131];
 
 %flip a coin to determine whether trial is from BDM or choice trials
 p = rand;
