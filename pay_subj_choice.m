@@ -68,13 +68,39 @@ DispString('draw', wpt, wait_img); Screen(wpt,'Flip'); pause(3);
 
 
 % 2nd display: "info for reward"
+% if length(item_id) < 2
+%     if item_id < 100
+%         shown_item = ['data/imgs_food/item_',num2str(item_id),'.jpg'];
+%         itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/50, [140000/w,140000/w]);
+%     elseif item_id > 100
+%         shown_item = ['data/imgs_trinkets/item_',num2str(item_id-100),'.jpg'];
+%         itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/10, [140000/w,140000/w]);
+%     end
+% else 
+%     %else its a bundle
+%     if item_id(1) < 100
+%         shown_item1 = ['data/imgs_food/item_',num2str(item_id(1)),'.jpg'];
+%         itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
+%     else
+%         shown_item1 = ['data/imgs_trinkets/item_',num2str(item_id(1)-100),'.jpg'];
+%         itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/20, [100,100]);
+%     end
+%     if item_id(2) < 100
+%         shown_item2 = ['data/imgs_food/item_',num2str(item_id(2)),'.jpg'];
+%         itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
+%     else
+%         shown_item2 = ['data/imgs_trinkets/item_',num2str(item_id(2)-100),'.jpg'];
+%         itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/20, [100,100]);
+%     end
+% end
+
 if length(item_id) < 2
     if item_id < 100
         shown_item = ['data/imgs_food/item_',num2str(item_id),'.jpg'];
         itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/50, [140000/w,140000/w]);
     elseif item_id > 100
         shown_item = ['data/imgs_trinkets/item_',num2str(item_id-100),'.jpg'];
-        itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/10, [140000/w,140000/w]);
+        itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/50, [140000/w,140000/w]);
     end
 else 
     %else its a bundle
@@ -83,14 +109,14 @@ else
         itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
     else
         shown_item1 = ['data/imgs_trinkets/item_',num2str(item_id(1)-100),'.jpg'];
-        itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/20, [100,100]);
+        itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
     end
     if item_id(2) < 100
         shown_item2 = ['data/imgs_food/item_',num2str(item_id(2)),'.jpg'];
         itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
     else
         shown_item2 = ['data/imgs_trinkets/item_',num2str(item_id(2)-100),'.jpg'];
-        itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/20, [100,100]);
+        itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
     end
 end
 
