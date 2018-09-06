@@ -4,7 +4,7 @@ function run_BDM_item(subID)
 
 try
     
-    debug = 0;
+    debug = 1;
     
     KbName('UnifyKeyNames');
     

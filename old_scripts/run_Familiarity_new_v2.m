@@ -4,27 +4,21 @@ function run_Familiarity_new_v2(subID)
 Screen('Preference', 'SkipSyncTests', 1)
 debug=1;
 
-if length(subID)>3
-    subID=subID(1:3);
-end
-
 try
-    all_items=[]
+
     % Load image files for the subject
-    for run=1:3
-        load(['data/item_list_sub_', subID,'-',run]) % item_ids is loaded
-        all_items=[all_items bdm_item_seq]
-    end
-    
-    all_items=unique(all_items);
-    idx_rnd = randperm(length(all_items));
-    item_rnd_idx = all_items(idx_rnd);
+    load(['data/item_list_sub_', subID]) % item_ids is loaded
+    idx_rnd = randperm(length(bdm_item_seq));
+    item_rnd_idx = bdm_item_seq(idx_rnd);
     
     % Set window pointer
-    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);
-    w = rect(3);
-    h = rect(4);
-    %[wpt, rect] = Screen('OpenWindow', 1, [0, 0, 0]); w = rect(3); h = rect(4);
+    % Set window pointer
+    if debug
+        %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 960 540] * 1.5); w = rect(3); h = rect(4);
+        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
+    else
+        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]); w = rect(3); h = rect(4);
+    end
     Screen('BlendFunction', wpt, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     % Preparation
@@ -81,7 +75,7 @@ try
             keyRes = GetChar;
             [keyIsDown,secs,keyCode] = KbCheck;
             keyName = KbName(find(keyCode));
-            if isequal(keyName,'Return')
+            if isequal(keyRes,'3')
                 break
             elseif isequal(keyRes,'1')
                 target = target - 1; numL_tmp = numL_tmp + 1; if target < 1, target = 1; end

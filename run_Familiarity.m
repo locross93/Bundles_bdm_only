@@ -9,11 +9,11 @@ if length(subID)>3
 end
 
 try
-    all_items=[]
+    all_items=[];
     % Load image files for the subject
     for run=1:3
         load(['data/item_list_sub_', subID,'-',num2str(run)]) % item_ids is loaded
-        all_items=[all_items bdm_item_seq]
+        all_items=[all_items bdm_item_seq];
     end
     
     all_items=unique(all_items);
@@ -21,7 +21,8 @@ try
     item_rnd_idx = all_items(idx_rnd);
     
     % Set window pointer
-    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);
+    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
+    %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);
     w = rect(3);
     h = rect(4);
     %[wpt, rect] = Screen('OpenWindow', 1, [0, 0, 0]); w = rect(3); h = rect(4);

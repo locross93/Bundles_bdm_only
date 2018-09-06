@@ -1,7 +1,7 @@
-function sanity_checks(subjectID)
+function sanity_checks_V1_WG(subID)
 
 if ~exist('subjectID','var')
-    disp('No subject ID input. Using default of 999-1'
+    disp('No subject ID input. Using default of 999-1')
     subID= '999-1';
 end
 
@@ -9,8 +9,8 @@ end
 %Modified to work with new pilot data 6/1/2018 WG
 
 %Initialize workspace
-clearvars;
-clc;
+%clearvars;
+%clc;
 
 %Specify script parameters
 split_by_category=1;

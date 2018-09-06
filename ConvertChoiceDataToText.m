@@ -1,8 +1,9 @@
 clear all;
 
-subID='101-1';
+subID='101-3';
 
-output_dir='/Volumes/WGExpansion/Box Sync/UCLA MSTP/Summer Rotation 2018/Logan Cross Project/fmri/taskTextFiles/';
+output_dir_3col='/Users/logancross/Documents/Bundle_Value/fmri/GLM/Three_column/';
+output_dir_mat='/Users/logancross/Documents/Bundle_Value/fmri/GLM/SPM/timing_files';
 
 
 %Load item and bundle BDM to get value information for items
@@ -14,6 +15,14 @@ temp_file = ['logs/bdm_bundle_sub_',subID,'.mat'];
 load(temp_file);
 bundle_items=item;
 bundle_value=value;
+
+%create struct for SPM
+subj_struct.left_button = cell(5,1);
+subj_struct.right_button = cell(5,1);
+subj_struct.value_dur = cell(5,1);
+subj_struct.value_onset = cell(5,1);
+subj_struct.value_param = cell(5,1);
+subj_struct.value_categ = cell(5,1);
 
 for fMRIrun=1:5
 %Load choice info trial and load variables
@@ -65,10 +74,34 @@ for t=1:length(trial_items)
     end
 end
 trial_value_clean=trial_value(~ErrorTrial_ind);
+%make 0 for items and 1 for bundles to put in struct
+bundle_bool_clean=bundle_trial_ind(~ErrorTrial_ind);
 
 output_text={'LeftButton','RightButton','Value'};
-dlmwrite([output_dir,['sub',subID,'_',output_text{1}],'_run',num2str(fMRIrun),'_timing.txt'],[left_buttonpress_times(:,2) zeros(length(left_buttonpress_times(:,2)),1) ones(length(left_buttonpress_times(:,2)),1)],'delimiter','\t')
-dlmwrite([output_dir,['sub',subID,'_',output_text{2}],'_run',num2str(fMRIrun),'_timing.txt'],[right_buttonpress_times(:,2) zeros(length(right_buttonpress_times(:,2)),1) ones(length(right_buttonpress_times(:,2)),1)],'delimiter','\t')
-dlmwrite([output_dir,['sub',subID,'_',output_text{3}],'_run',num2str(fMRIrun),'_timing.txt'],[condensed_time_clean(:,1) condensed_time_clean(:,2)-condensed_time_clean(:,1) trial_value_clean],'delimiter','\t')
+%save as three column text files for FSL
+%dlmwrite([output_dir_3col,['sub',subID,'_',output_text{1}],'_run',num2str(fMRIrun),'_timing.txt'],[left_buttonpress_times(:,2) zeros(length(left_buttonpress_times(:,2)),1) ones(length(left_buttonpress_times(:,2)),1)],'delimiter','\t')
+%dlmwrite([output_dir_3col,['sub',subID,'_',output_text{2}],'_run',num2str(fMRIrun),'_timing.txt'],[right_buttonpress_times(:,2) zeros(length(right_buttonpress_times(:,2)),1) ones(length(right_buttonpress_times(:,2)),1)],'delimiter','\t')
+%dlmwrite([output_dir_3col,['sub',subID,'_',output_text{3}],'_run',num2str(fMRIrun),'_timing.txt'],[condensed_time_clean(:,1) condensed_time_clean(:,2)-condensed_time_clean(:,1) trial_value_clean],'delimiter','\t')
+
+%put in struct and save
+subj_struct.left_button{fMRIrun} = left_buttonpress_times(:,2);
+subj_struct.right_button{fMRIrun} = right_buttonpress_times(:,2);
+subj_struct.value_onset{fMRIrun} = condensed_time_clean(:,1);
+subj_struct.value_dur{fMRIrun} = condensed_time_clean(:,2)-condensed_time_clean(:,1);
+subj_struct.value_param{fMRIrun} = trial_value_clean;
+subj_struct.value_categ{fMRIrun} = bundle_bool_clean;
+
+% %save as .mat files
+% left_button = left_buttonpress_times(:,2);
+% save([output_dir_mat,['sub',subID,'_',output_text{1}],'_run',num2str(fMRIrun),'_timing'], 'left_button')
+% right_button = right_buttonpress_times(:,2);
+% save([output_dir_mat,['sub',subID,'_',output_text{2}],'_run',num2str(fMRIrun),'_timing'], 'right_button')
+% value_onset = condensed_time_clean(:,1);
+% value_dur = condensed_time_clean(:,2)-condensed_time_clean(:,1);
+% value_param = trial_value_clean;
+% save([output_dir_mat,['sub',subID,'_',output_text{3}],'_run',num2str(fMRIrun),'_timing'],'value_onset','value_dur','value_param')
 
 end
+
+%save as a .mat file
+save([output_dir_mat,'/sub',subID,'_timing'],'subj_struct')
