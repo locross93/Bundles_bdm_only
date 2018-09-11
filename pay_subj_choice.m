@@ -1,9 +1,7 @@
-function pay_subj_choice(subID, item_id)
+function pay_subj_choice(subID, item_id, saveflag, debug)
 %% pay_subj_choice('999-1', [8, 102])
 
 max_price = 20;
-
-debug = 0;
 
 run_num = 1;
 file_name= ['choice_run',num2str(run_num),'_sub_',subID];
@@ -31,6 +29,8 @@ if length(item_id) < 2
     end
     if isempty(sub_choice)
         disp('ERROR ITEM NOT FOUND')
+        debug=1;
+        return;
     end
 else
     for i=1:length(item_list)
@@ -47,6 +47,8 @@ else
     end
     if isempty(sub_choice)
         disp('ERROR ITEM NOT FOUND')
+        debug=1;
+        return;
     end
 end
 
@@ -65,34 +67,6 @@ wait_img = DispString('init', wpt, 'Wait...', [0,0], floor(h/10), [255, 255, 255
 DispString('draw', wpt, wait_img); Screen(wpt,'Flip'); pause(2);
 wait_img = DispString('init', wpt, 'Choosing trial from Task 2...', [0,0], floor(h/15), [255, 255, 255], []);
 DispString('draw', wpt, wait_img); Screen(wpt,'Flip'); pause(3);
-
-
-% 2nd display: "info for reward"
-% if length(item_id) < 2
-%     if item_id < 100
-%         shown_item = ['data/imgs_food/item_',num2str(item_id),'.jpg'];
-%         itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/50, [140000/w,140000/w]);
-%     elseif item_id > 100
-%         shown_item = ['data/imgs_trinkets/item_',num2str(item_id-100),'.jpg'];
-%         itm_img = DispImage('init', wpt, shown_item, [0,-h/6], w/10, [140000/w,140000/w]);
-%     end
-% else 
-%     %else its a bundle
-%     if item_id(1) < 100
-%         shown_item1 = ['data/imgs_food/item_',num2str(item_id(1)),'.jpg'];
-%         itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
-%     else
-%         shown_item1 = ['data/imgs_trinkets/item_',num2str(item_id(1)-100),'.jpg'];
-%         itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/20, [100,100]);
-%     end
-%     if item_id(2) < 100
-%         shown_item2 = ['data/imgs_food/item_',num2str(item_id(2)),'.jpg'];
-%         itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
-%     else
-%         shown_item2 = ['data/imgs_trinkets/item_',num2str(item_id(2)-100),'.jpg'];
-%         itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/20, [100,100]);
-%     end
-% end
 
 if length(item_id) < 2
     if item_id < 100
@@ -130,7 +104,9 @@ else
 end
 
 condition = 'choice';
-save(['logs/payment/payment_sub_',subID],'item_id','sub_choice','med_bid', 'condition')
+if saveflag
+    save(['logs/payment/payment_sub_',subID],'item_id','sub_choice','med_bid', 'condition')
+end
 
 if length(item_id) < 2
     DispImage('draw', wpt, itm_img); 

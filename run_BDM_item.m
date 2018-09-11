@@ -1,14 +1,15 @@
 function run_BDM_item(subID)
 %% run_BDM_item('888-1')
-%% run_BDM_item('005-1')
+%% run_BDM_item('102-2')
 
 try
     
-    debug = 1;
+    debug = 0;
     
     KbName('UnifyKeyNames');
     
     Screen('Preference','SkipSyncTests', 1);
+    
     
     % Load image files for the subject
     file_items = ['data/item_list_sub_',subID];

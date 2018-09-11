@@ -1,14 +1,12 @@
-function SubsampleForFMRI(subjectID)
+function SubsampleForFMRI(subID)
 
-clear all;
-close all;
+%clear all;
+%close all;
 
-
-subID='010-1';
+%subID='010-1';
 saveflag=1;
 
 %Specify script parameters
-
 
 temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
 load(temp_file)

@@ -1,9 +1,7 @@
-function pay_subj_BDM(subID, item_id)
+function pay_subj_BDM(subID, item_id, saveflag, debug)
 %% pay_subj_BDM('999-1', [8, 102])
 
 max_price = 20;
-
-debug = 0;
 
 % Load log files
 item_list = [];
@@ -18,8 +16,6 @@ value_list = value;
 bundle_list = [];
 bundle_value_list = [];
 
-%need to change this when you get real data
-%file_name = ['dummy_bdm_bundle_sub_',subID];
 file_name = ['bdm_bundle_sub_',subID];
 load(['logs/',file_name]);
 bundle_list = item;
@@ -32,6 +28,8 @@ if length(item_id) < 2
     sub_bid = value_list(idx);
     if isempty(sub_bid)
         disp('ERROR ITEM NOT FOUND')
+        debug=1;
+        return;
     end
 else
     for i=1:length(bundle_list)
@@ -46,6 +44,8 @@ else
     end
     if isempty(sub_bid)
         disp('ERROR ITEM NOT FOUND')
+        debug=1;
+        return;
     end
 end
 com_bid = floor(rand() * max_price);
@@ -103,7 +103,9 @@ else
 end
 
 condition = 'BDM';
-save(['logs/payment/payment_sub_',subID],'item_id','sub_bid','com_bid', 'condition')
+if saveflag
+    save(['logs/payment/payment_sub_',subID],'item_id','sub_bid','com_bid', 'condition')
+end
 
 if length(item_id) < 2
     DispImage('draw', wpt, itm_img); 

@@ -6,7 +6,7 @@ clearvars;
 clc;
 
 %can analyze one day or across all day
-subID = '101-1';
+subID = '102-2';
 
 %Specify script parameters
 split_by_category=1;
@@ -25,7 +25,7 @@ bdm_item=bdm_item_orig(~no_response_ind);
 bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
 
 fig1 = figure;
-set(gcf,'units','normalized','outerposition',[0.25 0.25 0.75 0.75]);
+set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
 set(gcf,'Paperpositionmode','auto','Papersize',[20 20]);
 subplot(3,2,1)
 if split_by_category
@@ -193,29 +193,31 @@ title(sprintf('Mixed Bundle Bids - Subject %s',subID))
 xlabel('Value')
 ylabel('Count')
 
-run_num = 1;
-file_name= ['choice_run',num2str(run_num),'_sub_',subID];
+if str2num(subID(1:3)) >= 100
+    run_num = 1;
+    file_name= ['choice_run',num2str(run_num),'_sub_',subID];
 
-load(['logs/',file_name]);
-item_list = item;
-choice_list = choice;
-
-for run=2:5
-    file_name= ['choice_run',num2str(run),'_sub_',subID];
     load(['logs/',file_name]);
-    item_list = [item_list; item];
-    choice_list = [choice_list; choice];
+    item_list = item;
+    choice_list = choice;
+
+    for run=2:5
+        file_name= ['choice_run',num2str(run),'_sub_',subID];
+        load(['logs/',file_name]);
+        item_list = [item_list; item];
+        choice_list = [choice_list; choice];
+    end
+
+    %where was there no response
+    no_response = find(choice_list > 1);
+    choice_list(no_response) = 2;
+    num_missed = size(find(choice_list == 2), 1);
+
+    fig2 = figure;
+    histogram(choice_list)
+    title('Choices vs Reference Money')
+    set(gca,'XTick',[0:1:2])
+    xlabel('0: Money 1: Item')
+    ylabel('Count')
+    text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
 end
-
-%where was there no response
-no_response = find(choice_list > 1);
-choice_list(no_response) = 2;
-num_missed = size(find(choice_list == 2), 1);
-
-fig2 = figure;
-histogram(choice_list)
-title('Choices vs Reference Money')
-set(gca,'XTick',[0:1:2])
-xlabel('0: Money 1: Item')
-ylabel('Count')
-text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));

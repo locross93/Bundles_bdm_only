@@ -21,11 +21,12 @@ try
     item_rnd_idx = all_items(idx_rnd);
     
     % Set window pointer
-    [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
-    %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]);
-    w = rect(3);
-    h = rect(4);
-    %[wpt, rect] = Screen('OpenWindow', 1, [0, 0, 0]); w = rect(3); h = rect(4);
+    if debug
+        %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
+        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
+    else
+        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]); w = rect(3); h = rect(4);
+    end
     Screen('BlendFunction', wpt, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     % Preparation
