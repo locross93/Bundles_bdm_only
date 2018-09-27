@@ -1,6 +1,6 @@
 function run_choice(subID)
 %% run_choice('999-1')
-%% run_choice('102-1')
+%% run_choice('103-1')
 
 try
     debug = 0;
@@ -48,11 +48,12 @@ try
     med_bid_bundle = ['$',num2str(median_bid_bundle)];
     
     % Set window pointer
+    screen_num = max(Screen('Screens'));
     if debug
         %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
-        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
+        [wpt, rect] = Screen('OpenWindow', screen_num, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
     else
-        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0]); w = rect(3); h = rect(4);
+        [wpt, rect] = Screen('OpenWindow', screen_num, [0, 0, 0]); w = rect(3); h = rect(4);
     end
     disp(w)
     disp(h)
@@ -183,6 +184,9 @@ try
         % save data
         choice = [choice; trial_choice];
         item = [item; item_list(i,:)];
+        
+        %close at textures - added 9/25/18
+        Screen('Close');
     end
     
     %Closing screen
