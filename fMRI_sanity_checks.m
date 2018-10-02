@@ -6,7 +6,7 @@ clearvars;
 clc;
 
 %can analyze one day or across all day
-subID = '103-2';
+subID = '103-3';
 
 %Specify script parameters
 split_by_category=1;

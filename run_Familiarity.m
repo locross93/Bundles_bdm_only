@@ -85,6 +85,8 @@ try
             keyName = KbName(find(keyCode));
             if isequal(keyName,'Return')
                 break
+            elseif isequal(keyName,'return')
+                break
             elseif isequal(keyRes,'1')
                 target = target - 1; numL_tmp = numL_tmp + 1; if target < 1, target = 1; end
             elseif isequal(keyRes,'2')
@@ -94,6 +96,7 @@ try
                 FlushEvents
                 break 
             end
+            disp(keyName)
             FlushEvents
         end
         time_DECend = GetSecs - time_zero;
