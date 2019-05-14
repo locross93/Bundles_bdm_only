@@ -17,8 +17,6 @@ end
 %Received from Logan 6/1/2018 WG
 %Modified to work with new pilot data 6/1/2018 WG
 
-object_similarity_matrix=dlmread('word2vec_item_similarity.csv');
-
 
 %Specify script parameters
 split_by_category=1;

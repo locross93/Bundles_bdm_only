@@ -10,7 +10,7 @@ bundle_var = zeros(num_subjs,1);
 for i=1:num_subjs
     subID = all_subIDs{i};
     %load item data
-    temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
+    temp_file = ['/Users/logancross/Documents/Bundle_Value/stim_presentation/Bundles_fMRI_10_04/logs/bdm_items_sub_',subID,'.mat'];
     load(temp_file)
     bdm_item_value_orig = value;
     no_response_ind=bdm_item_value_orig==100;
@@ -20,7 +20,7 @@ for i=1:num_subjs
     
     
     %load bundle data
-    temp_file = ['logs/bdm_bundle_sub_',subID,'.mat'];
+    temp_file = ['/Users/logancross/Documents/Bundle_Value/stim_presentation/Bundles_fMRI_10_04/logs/bdm_bundle_sub_',subID,'.mat'];
     load(temp_file)
     bdm_bundle_value_orig = value;
     no_response_ind=bdm_bundle_value_orig==100;

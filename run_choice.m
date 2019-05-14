@@ -3,7 +3,7 @@ function run_choice(subID)
 %% run_choice('103-1')
 
 try
-    debug = 0;
+    debug = 1;
     Screen('Preference', 'SkipSyncTests', 1);
     %Input run number
     run_num = input('Run number: ');
@@ -50,8 +50,8 @@ try
     % Set window pointer
     screen_num = max(Screen('Screens'));
     if debug
-        %[wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
-        [wpt, rect] = Screen('OpenWindow', screen_num, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
+        [wpt, rect] = Screen('OpenWindow', 0, [0, 0, 0], [0 0 800 600] * 1.5); w = rect(3); h = rect(4);
+        %[wpt, rect] = Screen('OpenWindow', screen_num, [0, 0, 0], [0 0 1800 900]); w = rect(3); h = rect(4);
     else
         [wpt, rect] = Screen('OpenWindow', screen_num, [0, 0, 0]); w = rect(3); h = rect(4);
     end

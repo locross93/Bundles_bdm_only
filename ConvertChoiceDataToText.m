@@ -104,4 +104,4 @@ subj_struct.value_categ{fMRIrun} = bundle_bool_clean;
 end
 
 %save as a .mat file
-save([output_dir_mat,'/sub',subID,'_timing'],'subj_struct')
+%save([output_dir_mat,'/sub',subID,'_timing'],'subj_struct')
