@@ -3,7 +3,7 @@ function pay_subj(subID)
 
 %% pay_subj('800-1')
 %% pay_subj('999-1')
-%% pay_subj('005-1')
+%% pay_subj('014-1')
 
 
 %pick a trial at random to pay subject
@@ -16,14 +16,11 @@ function pay_subj(subID)
 
 % item id
 %under 100 for food, over 100 for trinkets
-%003
-%item_id = [9 37];
+file_name = ['logs/payment/selected_items_sub_',subID];
+load(file_name)
 
-%011
-%item_id = [1 8];
+item_id = ItemsToUse;
 
-%012
- item_id = [120];
 
 %800
 %item_id = [134];
