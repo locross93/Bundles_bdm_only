@@ -1,7 +1,7 @@
 function prepare_trials(subID)
 
 saveflag = true;
-%% prepare_trials('014-1')
+%% prepare_trials('017-1')
 
 close all;
 

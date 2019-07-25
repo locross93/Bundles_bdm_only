@@ -84,8 +84,8 @@ set(gca,'XTickLabel',{'0-1','2-3','4-5','6-7','8-9','10-11','12-13','14-15',...
 title(sprintf('Bundle Bids - Subject %s',subID))
 xlabel('Value')
 ylabel('Count')
-b_max_bin_count=max(max(bundle_category_counts));
-text(8.5,b_max_bin_count-7,sprintf('Mean: %0.1f \nMedian: %0.1f \nSTD: %0.1f',...
+max_bin_count=max(max(item_category_counts));
+text(8.5,28,sprintf('Mean: %0.1f \nMedian: %0.1f \nSTD: %0.1f',...
     mean_bvalue,median_bvalue,std_bvalue),'FontSize',10);
 
 %Assuming that first column is left item and 2nd column is right item.
