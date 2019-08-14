@@ -1,9 +1,9 @@
 function run_choice(subID)
 %% run_choice('999-1')
-%% run_choice('103-1')
+%% run_choice('104-1')
 
 try
-    debug = 1;
+    debug = 0;
     Screen('Preference', 'SkipSyncTests', 1);
     %Input run number
     run_num = input('Run number: ');

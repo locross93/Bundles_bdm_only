@@ -6,7 +6,7 @@ clearvars;
 clc;
 
 %can analyze one day or across all day
-subID = '104-1';
+subID = '900-1';
 
 %intercept
 intercept = true;
@@ -258,65 +258,3 @@ if intercept
 else
     text(0.5,17,sprintf('R2 value: %0.3f \n\\beta1 (left): %0.3f \n\\beta2 (right): %0.3f', LM_leftright.Rsquared.Adjusted, beta(1), beta(2)),'FontSize',16);
 end
-
-%plot choice behavior
-if str2num(subID(1:3)) >= 100 && length(subID) == 5
-    run_num = 1;
-    file_name= ['choice_run',num2str(run_num),'_sub_',subID];
-
-    load(['logs/',file_name]);
-    item_list = item;
-    choice_list = choice;
-
-    for run=2:5
-        file_name= ['choice_run',num2str(run),'_sub_',subID];
-        load(['logs/',file_name]);
-        item_list = [item_list; item];
-        choice_list = [choice_list; choice];
-    end
-
-    %where was there no response
-    no_response = find(choice_list > 1);
-    choice_list(no_response) = 2;
-    num_missed = size(find(choice_list == 2), 1);
-
-    fig3 = figure;
-    histogram(choice_list)
-    title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
-    set(gca,'XTick',[0:1:2])
-    xlabel('0: Money 1: Item')
-    ylabel('Count')
-    text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
-elseif str2num(subID(1:3)) >= 100 && length(subID) == 3
-    item_list = [];
-    choice_list = [];
-    for day=1:3
-        subID_temp = [subID,'-',num2str(day)];
-        
-        for run=1:5
-            file_name= ['choice_run',num2str(run),'_sub_',subID_temp];
-            load(['logs/',file_name]);
-            item_list = [item_list; item];
-            choice_list = [choice_list; choice];
-        end
-        
-        %where was there no response
-        no_response = find(choice_list > 1);
-        choice_list(no_response) = 2;
-        num_missed = size(find(choice_list == 2), 1);
-    end
-    fig3 = figure;
-    histogram(choice_list)
-    title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
-    set(gca,'XTick',[0:1:2])
-    xlabel('0: Money 1: Item')
-    ylabel('Count')
-    text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
-end
-
-%temporary - save item list to csv
-%error_inds = choice_list == 2;
-%item_list_clean = item_list(~error_inds,:);
-%mvpa_folder='/Users/logancross/Documents/Bundle_Value/mvpa/OpenfMRI_Format/';
-%dlmwrite([mvpa_folder,'sub',subID,'/model/task_info/item_list.txt'],item_list_clean,'delimiter','\t')
-
