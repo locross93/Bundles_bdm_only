@@ -1,6 +1,6 @@
-function run_BDM_item(subID)
-%% run_BDM_item('888-1')
-%% run_BDM_item('106-1')
+function run_BDM_item_temp(subID)
+%% temporary script for 105
+%% run_BDM_item_temp('105-99')
 
 try
     
@@ -11,10 +11,20 @@ try
     Screen('Preference','SkipSyncTests', 1);
     
     
-    % Load image files for the subject
-    file_items = ['data/item_list_sub_',subID];
-    load(file_items) % item_ids is loaded
-    item_list = bdm_item_seq;
+    % Load image files for the subject day 1
+    file_items1 = ['data/item_list_sub_105-1'];
+    load(file_items1) % item_ids is loaded
+    item_list1 = bdm_item_seq;
+    
+    % Load image files for the subject day 2
+    file_items2 = ['data/item_list_sub_105-2'];
+    load(file_items2) % item_ids is loaded
+    item_list2 = bdm_item_seq;
+    
+    item_list_all = [item_list1; item_list2];
+    item_list_unique = unique(item_list_all);
+    idx_rnd = randperm(length(item_list_unique));
+    item_list = item_list_unique(idx_rnd);
     
     % Set window pointer
     if debug
@@ -129,6 +139,22 @@ try
     % data save and closing
     fname_log = ['logs/bdm_items_sub_',subID];
     save(fname_log,'value','item','init_V','num_L','num_R');
+    
+    value_day1 = -1*ones(20,1);
+    value_day2 = -1*ones(20,1);
+    for i=1:20
+        temp_ind1 = find(item == item_list1(i));
+        value_day1(i) = value(temp_ind1);
+        temp_ind2 = find(item == item_list2(i));
+        value_day2(i) = value(temp_ind2);
+    end
+    
+    fname_log1 = ['logs/bdm_items_sub_105-1_corrected'];
+    save(fname_log,'value_day1');
+    
+    fname_log2 = ['logs/bdm_items_sub_105-2'];
+    value = value_day2;
+    save(fname_log,'value');
     
     durITI = 2;
     time_ITIstrt = GetSecs - time_zero;
