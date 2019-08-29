@@ -1,5 +1,5 @@
 function run_BDM_bundle_temp(subID)
-%% run_BDM_bundle_temp('106-99')
+%% run_BDM_bundle_temp('105-88')
 
 try
 
@@ -10,16 +10,21 @@ try
     Screen('Preference','SkipSyncTests', 1);
     
     % Load image files for the subject day 1
-    file_items1 = ['data/item_list_sub_106-1'];
+    file_items1 = ['data/item_list_sub_105-1'];
     load(file_items1) % item_ids is loaded
     bundle_list1 = bundle_item_seq;
     
     % Load image files for the subject day 2
-    file_items2 = ['data/item_list_sub_106-2'];
+    file_items2 = ['data/item_list_sub_105-2'];
     load(file_items2) % item_ids is loaded
     bundle_list2 = bundle_item_seq;
     
-    bundle_list_all = [bundle_list1; bundle_list2];
+    % Load image files for the subject day 2
+    file_items3 = ['data/item_list_sub_105-3'];
+    load(file_items3) % item_ids is loaded
+    bundle_list3 = bundle_item_seq;
+    
+    bundle_list_all = [bundle_list1; bundle_list2; bundle_list3];
     sort_bundle_list_all = sort(bundle_list_all,2);
     [C,ia,ic] = unique(sort_bundle_list_all,'rows');
     bundle_list_unique = bundle_list_all(ia,:);
@@ -151,6 +156,7 @@ try
     
     value_day1 = -1*ones(210,1);
     value_day2 = -1*ones(210,1);
+    value_day3 = -1*ones(210,1);
     for i=1:210
         temp_ind1 = find(ismember(item,bundle_list1(i,:),'rows'));
         if isempty(temp_ind1)
@@ -162,17 +168,27 @@ try
             temp_ind2 = find(ismember(item,flip(bundle_list2(i,:)),'rows'));
         end
         value_day2(i) = value(temp_ind2);
+        temp_ind3 = find(ismember(item,bundle_list3(i,:),'rows'));
+        if isempty(temp_ind3)
+            temp_ind3 = find(ismember(item,flip(bundle_list3(i,:)),'rows'));
+        end
+        value_day3(i) = value(temp_ind3);
     end
     
-    fname_log1 = ['logs/bdm_bundle_sub_106-1_corrected'];
+    fname_log1 = ['logs/bdm_bundle_sub_105-1_corrected'];
     value = value_day1;
     item = bundle_list1;
     save(fname_log1,'value','item');
     
-    fname_log2 = ['logs/bdm_bundle_sub_106-2'];
+    fname_log2 = ['logs/bdm_bundle_sub_105-2'];
     value = value_day2;
     item = bundle_list2;
     save(fname_log2,'value','item');
+    
+    fname_log3 = ['logs/bdm_bundle_sub_105-3'];
+    value = value_day3;
+    item = bundle_list3;
+    save(fname_log3,'value','item');
     
     durITI = 4;
     time_ITIstrt = GetSecs - time_zero;

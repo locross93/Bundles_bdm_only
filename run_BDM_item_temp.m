@@ -1,6 +1,6 @@
 function run_BDM_item_temp(subID)
-%% temporary script for 106
-%% run_BDM_item_temp('106-99')
+%% temporary script for 105
+%% run_BDM_item_temp('105-88')
 
 try
     
@@ -12,16 +12,21 @@ try
     
     
     % Load image files for the subject day 1
-    file_items1 = ['data/item_list_sub_106-1'];
+    file_items1 = ['data/item_list_sub_105-1'];
     load(file_items1) % item_ids is loaded
     item_list1 = bdm_item_seq;
     
     % Load image files for the subject day 2
-    file_items2 = ['data/item_list_sub_106-2'];
+    file_items2 = ['data/item_list_sub_105-2'];
     load(file_items2) % item_ids is loaded
     item_list2 = bdm_item_seq;
     
-    item_list_all = [item_list1; item_list2];
+    % Load image files for the subject day 3
+    file_items3 = ['data/item_list_sub_105-3'];
+    load(file_items3) % item_ids is loaded
+    item_list3 = bdm_item_seq;
+    
+    item_list_all = [item_list1; item_list2; item_list3];
     item_list_unique = unique(item_list_all);
     idx_rnd = randperm(length(item_list_unique));
     item_list = item_list_unique(idx_rnd);
@@ -142,22 +147,30 @@ try
     
     value_day1 = -1*ones(20,1);
     value_day2 = -1*ones(20,1);
+    value_day3 = -1*ones(20,1);
     for i=1:20
         temp_ind1 = find(item == item_list1(i));
         value_day1(i) = value(temp_ind1);
         temp_ind2 = find(item == item_list2(i));
         value_day2(i) = value(temp_ind2);
+        temp_ind3 = find(item == item_list3(i));
+        value_day3(i) = value(temp_ind3);
     end
     
-    fname_log1 = ['logs/bdm_items_sub_106-1_corrected'];
+    fname_log1 = ['logs/bdm_items_sub_105-1_corrected'];
     value = value_day1;
     item = item_list1;
     save(fname_log1,'value','item');
     
-    fname_log2 = ['logs/bdm_items_sub_106-2'];
+    fname_log2 = ['logs/bdm_items_sub_105-2'];
     value = value_day2;
     item = item_list2;
     save(fname_log2,'value','item');
+    
+    fname_log3 = ['logs/bdm_items_sub_105-3'];
+    value = value_day3;
+    item = item_list3;
+    save(fname_log3,'value','item');
     
     durITI = 2;
     time_ITIstrt = GetSecs - time_zero;

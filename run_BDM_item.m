@@ -1,6 +1,6 @@
 function run_BDM_item(subID)
 %% run_BDM_item('888-1')
-%% run_BDM_item('106-1')
+%% run_BDM_item('106-3')
 
 try
     
