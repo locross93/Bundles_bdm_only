@@ -1,7 +1,7 @@
 function prep_pay_subj_fMRI(subID)
 
 saveflag = true;
-%% prep_pay_subj_fMRI('105-2')
+%% prep_pay_subj_fMRI('106-2')
 
 file_name = ['data/item_list_sub_',subID];
 load(file_name);

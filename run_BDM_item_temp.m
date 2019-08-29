@@ -1,6 +1,6 @@
 function run_BDM_item_temp(subID)
-%% temporary script for 105
-%% run_BDM_item_temp('105-99')
+%% temporary script for 106
+%% run_BDM_item_temp('106-99')
 
 try
     
@@ -12,12 +12,12 @@ try
     
     
     % Load image files for the subject day 1
-    file_items1 = ['data/item_list_sub_105-1'];
+    file_items1 = ['data/item_list_sub_106-1'];
     load(file_items1) % item_ids is loaded
     item_list1 = bdm_item_seq;
     
     % Load image files for the subject day 2
-    file_items2 = ['data/item_list_sub_105-2'];
+    file_items2 = ['data/item_list_sub_106-2'];
     load(file_items2) % item_ids is loaded
     item_list2 = bdm_item_seq;
     
@@ -149,12 +149,15 @@ try
         value_day2(i) = value(temp_ind2);
     end
     
-    fname_log1 = ['logs/bdm_items_sub_105-1_corrected'];
-    save(fname_log,'value_day1');
+    fname_log1 = ['logs/bdm_items_sub_106-1_corrected'];
+    value = value_day1;
+    item = item_list1;
+    save(fname_log1,'value','item');
     
-    fname_log2 = ['logs/bdm_items_sub_105-2'];
+    fname_log2 = ['logs/bdm_items_sub_106-2'];
     value = value_day2;
-    save(fname_log,'value');
+    item = item_list2;
+    save(fname_log2,'value','item');
     
     durITI = 2;
     time_ITIstrt = GetSecs - time_zero;
