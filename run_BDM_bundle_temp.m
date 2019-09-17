@@ -7,6 +7,7 @@ try
     
     KbName('UnifyKeyNames');
     
+   
     Screen('Preference','SkipSyncTests', 1);
     
     % Load image files for the subject day 1
