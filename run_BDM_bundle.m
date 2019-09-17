@@ -1,12 +1,14 @@
 function run_BDM_bundle(subID)
 %% run_BDM_bundle('888-1')
-%% run_BDM_bundle('017-1')
+%% run_BDM_bundle('018-1')
 
 try
 
     debug = 0;
     
     KbName('UnifyKeyNames');
+    
+    Screen('Preference','SkipSyncTests', 1);
     
     % Load image files for the subject
     file_items = ['data/item_list_sub_',subID];
@@ -52,18 +54,18 @@ try
         
         % BDM
         if bundle_list(i,1) < 100
-            shown_item1 = ['data/imgs_food/item_',num2str(bundle_list(i,1)),'.jpg'];
-            itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
+            shown_item1 = ['images/WithoutText/imgs_food/item_',num2str(bundle_list(i,1)),'.jpg'];
+            itm_img1 = DispImage('init', wpt, shown_item1, [-w/8.0,-h/15], w/100, [100,100]);
         else
-            shown_item1 = ['data/imgs_trinkets/item_',num2str(bundle_list(i,1)-100),'.jpg'];
-            itm_img1 = DispImage('init', wpt, shown_item1, [-w/7.0,-h/15], w/100, [100,100]);
+            shown_item1 = ['images/WithoutText/imgs_trinkets/item_',num2str(bundle_list(i,1)-100),'.jpg'];
+            itm_img1 = DispImage('init', wpt, shown_item1, [-w/8.0,-h/15], w/100, [100,100]);
         end
         if bundle_list(i,2) < 100
-            shown_item2 = ['data/imgs_food/item_',num2str(bundle_list(i,2)),'.jpg'];
-            itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
+            shown_item2 = ['images/WithoutText/imgs_food/item_',num2str(bundle_list(i,2)),'.jpg'];
+            itm_img2 = DispImage('init', wpt, shown_item2, [w/8.0,-h/15], w/100, [100,100]);
         else
-            shown_item2 = ['data/imgs_trinkets/item_',num2str(bundle_list(i,2)-100),'.jpg'];
-            itm_img2 = DispImage('init', wpt, shown_item2, [w/7.0,-h/15], w/100, [100,100]);
+            shown_item2 = ['images/WithoutText/imgs_trinkets/item_',num2str(bundle_list(i,2)-100),'.jpg'];
+            itm_img2 = DispImage('init', wpt, shown_item2, [w/8.0,-h/15], w/100, [100,100]);
         end
         
         %target = ceil(rand() * length(w_bin));

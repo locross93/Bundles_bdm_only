@@ -1,6 +1,6 @@
 function run_BDM_item(subID)
 %% run_BDM_item('900-1')
-%% run_BDM_item('017-1')
+%% run_BDM_item('019-1')
 
 try
     
@@ -8,7 +8,7 @@ try
     
     KbName('UnifyKeyNames');
     
-    %Screen('Preference','SkipSyncTests', 2);
+    Screen('Preference','SkipSyncTests', 1);
     
     % Load image files for the subject
     file_items = ['data/item_list_sub_',subID];
@@ -54,10 +54,10 @@ try
         
         % BDM
         if item_list(i) < 100
-            shown_item = ['data/imgs_food/item_',num2str(item_list(i)),'.jpg'];
+            shown_item = ['images/WithText/imgs_food/item_',num2str(item_list(i)),'.jpg'];
             itm_img = DispImage('init', wpt, shown_item, [0,-h/15], w/50, [140000/w,140000/w]);
         elseif item_list(i) > 100
-            shown_item = ['data/imgs_trinkets/item_',num2str(item_list(i)-100),'.jpg'];
+            shown_item = ['images/WithText/imgs_trinkets/item_',num2str(item_list(i)-100),'.jpg'];
             itm_img = DispImage('init', wpt, shown_item, [0,-h/15], w/50, [140000/w,140000/w]);
         end
         
