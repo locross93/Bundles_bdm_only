@@ -6,7 +6,7 @@ clearvars;
 clc;
 
 %Specify script parameters
-subID = '018-1'; %800-1 802-1 888-1
+subID = '020-1'; %800-1 802-1 888-1
 split_by_category=1;
 
 histogram_binedges=0:2:20; %Bin size of 2

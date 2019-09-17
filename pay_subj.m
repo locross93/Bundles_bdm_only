@@ -3,7 +3,7 @@ function pay_subj(subID)
 
 %% pay_subj('800-1')
 %% pay_subj('999-1')
-%% pay_subj('018-1')
+%% pay_subj('020-1')
 
 
 %pick a trial at random to pay subject
