@@ -3,7 +3,7 @@ function pay_subj(subID)
 saveflag = true;
 debug = 0;
 
-%% pay_subj('105-3')
+%% pay_subj('107-1')
 %% pay_subj('004-3')
 
 
