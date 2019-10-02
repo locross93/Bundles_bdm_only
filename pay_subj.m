@@ -3,7 +3,7 @@ function pay_subj(subID)
 saveflag = true;
 debug = 0;
 
-%% pay_subj('107-1')
+%% pay_subj('108-1')
 %% pay_subj('004-3')
 
 
@@ -27,6 +27,7 @@ item_id = ItemsToUse';
 %item_id = [5 131];
 
 %flip a coin to determine whether trial is from BDM or choice trials
+rng('shuffle')
 p = rand;
 if p > 0.5
     %BDM

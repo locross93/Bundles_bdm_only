@@ -48,6 +48,7 @@ else
         return;
     end
 end
+rng('shuffle')
 com_bid = floor(rand() * max_price);
 
 %%%%% Display for the subject %%%%%

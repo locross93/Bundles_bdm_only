@@ -51,6 +51,7 @@ else %No other option than to choose from All day Food or Trinket items
     %Choose random number to choose between bundle or item
     rng('shuffle');
     BundleOrItem=rand;
+    disp(BundleOrItem)
     
     if BundleOrItem<0.5 %If random number less than 0.5, choose single item
         ItemsToUse=datasample(PossibleItems,1);
