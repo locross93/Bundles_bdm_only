@@ -1,6 +1,6 @@
 function run_Familiarity(subID)
 %%
-% run_BDM('150424a')
+% run_Familiarity('108-3')
 Screen('Preference', 'SkipSyncTests', 1)
 debug=0;
 
