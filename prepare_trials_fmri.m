@@ -94,7 +94,8 @@ for day=1:3
         save(f_name,'bdm_item_seq','bundle_item_seq', 'choice_item_cell','f_items_all_days','t_items_all_days');
         disp('Done!')
     else
-        disp('WARNING: The file already exists!')
+        save(f_name,'bdm_item_seq','bundle_item_seq', 'choice_item_cell','f_items_all_days','t_items_all_days');
+        disp('WARNING: The file already exists! Overwriting')
     end
 end
 
