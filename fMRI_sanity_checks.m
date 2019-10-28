@@ -6,7 +6,7 @@ clearvars;
 clc;
 
 %can analyze one day or across all day
-subID = '109-2';
+subID = '110-1';
 
 %intercept
 intercept = true;

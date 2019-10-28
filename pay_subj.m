@@ -1,4 +1,5 @@
 function pay_subj(subID)
+Screen('Preference', 'SkipSyncTests', 1);
 
 saveflag = true;
 debug = 0;
@@ -28,7 +29,7 @@ item_id = ItemsToUse';
 
 %flip a coin to determine whether trial is from BDM or choice trials
 rng('shuffle')
-p = rand;
+p = rand
 if p > 0.5
     %BDM
     pay_subj_BDM(subID, item_id, saveflag, debug);
