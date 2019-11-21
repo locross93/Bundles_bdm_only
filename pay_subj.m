@@ -4,7 +4,7 @@ Screen('Preference', 'SkipSyncTests', 1);
 saveflag = true;
 debug = 0;
 
-%% pay_subj('109-1')
+%% pay_subj('111-1')
 %% pay_subj('004-3')
 
 
