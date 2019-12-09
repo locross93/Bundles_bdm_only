@@ -1,7 +1,7 @@
 %function prepare_trials_fmri(pilot_subID, fmri_subID)
 %% prepare_trials_fmri('888-1', '101-1')
-pilot_subID='029-1';
-fmri_subID='112-1';
+pilot_subID='027-1';
+fmri_subID='113-1';
 
 num_runs = 5;
 
