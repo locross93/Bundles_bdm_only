@@ -6,8 +6,7 @@ clearvars;
 clc;
 
 %can analyze one day or across all day
-%fmri subjects include '101','102','103','104','105','106''107','108','109','110','111','112','113','114'
-subID = '114';
+subID = '104';
 
 %intercept
 intercept = true;
@@ -240,17 +239,25 @@ xlabel('Value')
 ylabel('Count')
 
 %plot bundle value vs sum of individual values
+LM_leftright=fitlm([bdm_bundle_item_values],bdm_bundle_value,'VarNames',{'LeftItemValue','RightItemValue','BundleValue'},'Intercept',intercept);
+beta=LM_leftright.Coefficients.Estimate;
 fig2 = figure;
 sum_of_values = sum(bdm_bundle_item_values,2);
-%plot(sum_of_values,bdm_bundle_value,'.','MarkerSize',20);
-binscatter(sum_of_values,bdm_bundle_value,[20 20])
+plot(sum_of_values,bdm_bundle_value,'.','MarkerSize',20);
 hold on
-plot((0:.01:20), (0:.01:20),'MarkerSize',10);
+plot(sum_of_values, sum_of_values,'MarkerSize',10);
 xlabel('Value of Sum of Individual Item Values','FontSize',16);
 ylabel('Bundle Value','FontSize',16);
 title(sprintf('Bundle Value vs. Linear Sum - Subject %s',subID),'FontSize',18);
-xlim([0 20])
+%title(sprintf('Bundle Value vs. Linear Sum - Subject 001'),'FontSize',18);
+xlim([0 max([PredictedValues; 20])])
 ylim([0 20]);
+if intercept
+    %text(0.5,17,sprintf('R2 value: %0.3f \n\\beta1 (intercept): %0.3f \n\\beta2 (left): %0.3f \n\\beta3 (right): %0.3f', LM_leftright.Rsquared.Adjusted, beta(1), beta(2), beta(3)),'FontSize',16);
+    text(0.5,17,sprintf('R^{2} value: %0.3f \n\\beta_{0} (intercept): %0.3f \n\\beta_{1} (item 1): %0.3f \n\\beta_{2} (item 2): %0.3f', LM_leftright.Rsquared.Adjusted, beta(1), beta(2), beta(3)),'FontSize',16);
+else
+    text(0.5,17,sprintf('R2 value: %0.3f \n\\beta1 (left): %0.3f \n\\beta2 (right): %0.3f', LM_leftright.Rsquared.Adjusted, beta(1), beta(2)),'FontSize',16);
+end
 
 %plot choice behavior
 if str2num(subID(1:3)) >= 100 && length(subID) == 5
@@ -357,27 +364,13 @@ ylabel('Count')
 if length(subID) == 5
     choice_rts = [];
     for run=1:5
-        temp_file = ['logs/choice_run',num2str(run),'_sub_',subID,'_time.mat'];
+        temp_file = ['choice_run',num2str(run),'_sub_',subID];
         load(temp_file)
         rts_temp = time_DEC(:,2) - time_DEC(:,1);
         choice_rts = [choice_rts; rts_temp];
     end
 elseif length(subID) == 3
-    choice_rts = [];
+    bundle_rts = [];
     for i=1:3
         subID_temp = [subID,'-',num2str(i)];
-        for run=1:5
-            temp_file = ['logs/choice_run',num2str(run),'_sub_',subID_temp,'_time.mat'];
-            load(temp_file)
-            rts_temp = time_DEC(:,2) - time_DEC(:,1);
-            choice_rts = [choice_rts; rts_temp];
-        end
-    end
-end
-
-subplot(3,1,3)
-histogram(choice_rts,50)
-title(sprintf('Reaction Times for fMRI Choice Trials - Subject %s',subID),'FontSize',12)
-xlabel('RT')
-ylabel('Count')
     
