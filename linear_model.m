@@ -4,7 +4,7 @@ clc;
 
 %can analyze one day or across all days
 %fmri subjects include '101','102','103','104','105','106''107','108','109','110','111','112','113','114'
-subID = '101';
+subID = '102';
 
 %intercept
 intercept = true;

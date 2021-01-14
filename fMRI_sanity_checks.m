@@ -7,7 +7,7 @@ clc;
 
 %can analyze one day or across all days
 %fmri subjects include '101','102','103','104','105','106''107','108','109','110','111','112','113','114'
-subID = '101';
+subID = '101-1';
 
 %intercept
 intercept = true;
@@ -18,31 +18,74 @@ XTickLabels={'0-1','2-3','4-5','6-7','8-9','10-11','12-13','14-15',...
     '16-17','18-20'};
 histogram_binedges=-0.5:1:20.5; %Bin size of 2
 
-%load item data
 if length(subID) == 5
+    %load item data
     temp_file = ['logs/bdm_items_sub_',subID,'.mat'];
     load(temp_file)
     bdm_item_value_orig = value;
-    no_response_ind=bdm_item_value_orig==100;
-    bdm_item_value=bdm_item_value_orig(~no_response_ind);
     bdm_item_orig = item;
-    bdm_item=bdm_item_orig(~no_response_ind);
-    bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
+    
+    %load bundle data
+    temp_file = ['logs/bdm_bundle_sub_',subID,'.mat'];
+    load(temp_file)
+    bdm_bundle_value_orig = value;
+    bdm_bundle_orig = item;
+    
+    %find item values in bundle for regression
+    bdm_bundle_item_values = zeros(length(bdm_bundle_orig), 2);
+    for j=1:length(bdm_bundle_orig)
+        temp_bundle = bdm_bundle_orig(j,:);
+        left_item_ind = find(bdm_item_orig == temp_bundle(1));
+        bdm_bundle_item_values(j,1) = bdm_item_value_orig(left_item_ind);
+        right_item_ind = find(bdm_item_orig == temp_bundle(2));
+        bdm_bundle_item_values(j,2) = bdm_item_value_orig(right_item_ind);
+    end
 elseif length(subID) == 3
     bdm_item_value_orig = [];
     bdm_item_orig = [];
-    for i=1:3
-        subID_temp = [subID,'-',num2str(i)];
+    bdm_bundle_value_orig = [];
+    bdm_bundle_orig = [];
+    bdm_bundle_item_values = [];
+    for day=1:3
+        subID_temp = [subID,'-',num2str(day)];
+        %load item data
         temp_file = ['logs/bdm_items_sub_',subID_temp,'.mat'];
         load(temp_file)
-        bdm_item_value_orig = [bdm_item_value_orig; value];
-        bdm_item_orig = [bdm_item_orig; item];
+        item_value = value;
+        single_item = item;
+        
+        %load bundle data
+        temp_file = ['logs/bdm_bundle_sub_',subID_temp,'.mat'];
+        load(temp_file)
+        bundle_value = value;
+        bundle_items = item;
+        %find item values in bundle for regression
+        bundle_item_values_temp = zeros(length(bundle_items), 2);
+        for j=1:length(bundle_value)
+            temp_bundle = bundle_items(j,:);
+            left_item_ind = find(single_item == temp_bundle(1));
+            bundle_item_values_temp(j,1) = item_value(left_item_ind);
+            right_item_ind = find(single_item == temp_bundle(2));
+            bundle_item_values_temp(j,2) = item_value(right_item_ind);
+        end
+        
+        bdm_item_value_orig = [bdm_item_value_orig; item_value];
+        bdm_item_orig = [bdm_item_orig; single_item];
+        bdm_bundle_value_orig = [bdm_bundle_value_orig; bundle_value];
+        bdm_bundle_orig = [bdm_bundle_orig; item];
+        bdm_bundle_item_values = [bdm_bundle_item_values; bundle_item_values_temp];
     end
-    no_response_ind=bdm_item_value_orig==100;
-    bdm_item_value=bdm_item_value_orig(~no_response_ind);
-    bdm_item=bdm_item_orig(~no_response_ind);
-    bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
 end
+
+no_response_ind=bdm_item_value_orig==100;
+bdm_item_value=bdm_item_value_orig(~no_response_ind);
+bdm_item=bdm_item_orig(~no_response_ind);
+bdm_item_category = bdm_item>=71; %0 is food. 1 is trinket.
+
+no_response_ind=bdm_bundle_value_orig==100;
+bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
+bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
+bdm_bundle_item_category = bdm_bundle_items>=71; %0 is food. 1 is trinket.
 
 fig1 = figure;
 set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
@@ -67,32 +110,6 @@ end
 title(sprintf('Invididual Item Bids - Subject %s',subID),'FontSize',18)
 xlabel('Value')
 ylabel('Count')
-
-%load bundle data
-if length(subID) == 5
-    temp_file = ['logs/bdm_bundle_sub_',subID,'.mat'];
-    load(temp_file)
-    bdm_bundle_value_orig = value;
-    no_response_ind=bdm_bundle_value_orig==100;
-    bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
-    bdm_bundle_orig = item;
-    bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
-    bdm_bundle_item_category = bdm_bundle_items>=71; %0 is food. 1 is trinket.
-elseif length(subID) == 3
-    bdm_bundle_value_orig = [];
-    bdm_bundle_orig = [];
-    for i=1:3
-        subID_temp = [subID,'-',num2str(i)];
-        temp_file = ['logs/bdm_bundle_sub_',subID_temp,'.mat'];
-        load(temp_file)
-        bdm_bundle_value_orig = [bdm_bundle_value_orig; value];
-        bdm_bundle_orig = [bdm_bundle_orig; item];
-    end
-    no_response_ind=bdm_bundle_value_orig==100;
-    bdm_bundle_value=bdm_bundle_value_orig(~no_response_ind);
-    bdm_bundle_items=bdm_bundle_orig(~no_response_ind,:);
-    bdm_bundle_item_category = bdm_bundle_items>=71; %0 is food. 1 is trinket.
-end
 
 bdm_bundle_category=zeros(length(bdm_bundle_value),1);
 bdm_bundle_category(bdm_bundle_item_category(:,1)==0 & bdm_bundle_item_category(:,2)==0)=1; %Food bundle
@@ -124,35 +141,14 @@ ylabel('Count')
 %Assuming that first column is left item and 2nd column is right item.
 %Linear regression across left (x1) and right (x2) item
 %Bundle value=B1*x1+B2*x2+C
-remove_errors=0;
-for j=1:2
-    for i=1:length(bdm_bundle_items(:,1))
-        if any(bdm_item==bdm_bundle_items(i,j))
-            temp = bdm_item_value(bdm_item==bdm_bundle_items(i,j));
-            %for items valued every day, take the value from the same day
-            if length(temp) > 1
-                assert(length(temp) == 3)
-                if i <= 210
-                    bdm_bundle_item_values(i,j)=temp(1);
-                elseif i <= 420
-                    bdm_bundle_item_values(i,j)=temp(2);
-                else
-                    bdm_bundle_item_values(i,j)=temp(3);
-                end
-            end
-        else
-            bdm_bundle_item_values(i,j)=-1; %Error code
-            remove_errors=1;
-        end
-    end
-end
 
-if remove_errors
-    error_ind=any(bdm_bundle_item_values==-1,2);
+%remove errors
+error_ind=any(bdm_bundle_item_values==-1,2);
+if max(error_ind) == 1
+    disp('ERRORS')
     bdm_bundle_item_values=bdm_bundle_item_values(~error_ind);
     bdm_bundle_value=bdm_bundle_value(~error_ind);
 end
-
 
 LM_leftright=fitlm([bdm_bundle_item_values],bdm_bundle_value,'VarNames',{'LeftItemValue','RightItemValue','BundleValue'},'Intercept',intercept)
 fprintf('R2 value: %f \n', LM_leftright.Rsquared.Adjusted);
@@ -275,132 +271,132 @@ title(sprintf('Bundle Value vs. Linear Sum - Subject %s',subID),'FontSize',18);
 xlim([0 20])
 ylim([0 20]);
 
-% %plot choice behavior
-% if str2num(subID(1:3)) >= 100 && length(subID) == 5
-%     run_num = 1;
-%     file_name= ['choice_run',num2str(run_num),'_sub_',subID];
-% 
-%     load(['logs/',file_name]);
-%     item_list = item;
-%     choice_list = choice;
-% 
-%     for run=2:5
-%         file_name= ['choice_run',num2str(run),'_sub_',subID];
-%         load(['logs/',file_name]);
-%         item_list = [item_list; item];
-%         choice_list = [choice_list; choice];
-%     end
-% 
-%     %where was there no response
-%     no_response = find(choice_list > 1);
-%     choice_list(no_response) = 2;
-%     num_missed = size(find(choice_list == 2), 1);
-% 
-%     fig3 = figure;
-%     histogram(choice_list)
-%     title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
-%     set(gca,'XTick',[0:1:2])
-%     xlabel('0: Money 1: Item')
-%     ylabel('Count')
-%     text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
-% elseif str2num(subID(1:3)) >= 100 && length(subID) == 3
-%     item_list = [];
-%     choice_list = [];
-%     for day=1:3
-%         subID_temp = [subID,'-',num2str(day)];
-%         
-%         for run=1:5
-%             file_name= ['choice_run',num2str(run),'_sub_',subID_temp];
-%             load(['logs/',file_name]);
-%             item_list = [item_list; item];
-%             choice_list = [choice_list; choice];
-%         end
-%         
-%         %where was there no response
-%         no_response = find(choice_list > 1);
-%         choice_list(no_response) = 2;
-%         num_missed = size(find(choice_list == 2), 1);
-%     end
-%     fig3 = figure;
-%     histogram(choice_list)
-%     title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
-%     set(gca,'XTick',[0:1:2])
-%     xlabel('0: Money 1: Item')
-%     ylabel('Count')
-%     text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
-% end
-% 
-% %reaction times
-% %load single item timing data
-% if length(subID) == 5
-%     temp_file = ['logs/bdm_items_sub_',subID,'_time.mat'];
-%     load(temp_file)
-%     item_rts = time_DEC(:,2) - time_DEC(:,1);
-% elseif length(subID) == 3
-%     item_rts = [];
-%     for i=1:3
-%         subID_temp = [subID,'-',num2str(i)];
-%         temp_file = ['logs/bdm_items_sub_',subID_temp,'_time.mat'];
-%         load(temp_file)
-%         rts_temp = time_DEC(:,2) - time_DEC(:,1);
-%         item_rts = [item_rts; rts_temp];
-%     end
-% end
-% 
-% fig4 = figure;
-% subplot(3,1,1)
-% histogram(item_rts,50)
-% title(sprintf('Reaction Times for Single Item WTP Bid Trials - Subject %s',subID),'FontSize',12)
-% xlabel('RT')
-% ylabel('Count')
-% 
-% %load bundle timing data
-% if length(subID) == 5
-%     temp_file = ['logs/bdm_bundle_sub_',subID,'_time.mat'];
-%     load(temp_file)
-%     bundle_rts = time_DEC(:,2) - time_DEC(:,1);
-% elseif length(subID) == 3
-%     bundle_rts = [];
-%     for i=1:3
-%         subID_temp = [subID,'-',num2str(i)];
-%         temp_file = ['logs/bdm_bundle_sub_',subID_temp,'_time.mat'];
-%         load(temp_file)
-%         rts_temp = time_DEC(:,2) - time_DEC(:,1);
-%         bundle_rts = [bundle_rts; rts_temp];
-%     end
-% end
-% 
-% subplot(3,1,2)
-% histogram(bundle_rts,50)
-% title(sprintf('Reaction Times for Bundle WTP Bid Trials - Subject %s',subID),'FontSize',12)
-% xlabel('RT')
-% ylabel('Count')
-% 
-% %load fmri choice timing data
-% if length(subID) == 5
-%     choice_rts = [];
-%     for run=1:5
-%         temp_file = ['logs/choice_run',num2str(run),'_sub_',subID,'_time.mat'];
-%         load(temp_file)
-%         rts_temp = time_DEC(:,2) - time_DEC(:,1);
-%         choice_rts = [choice_rts; rts_temp];
-%     end
-% elseif length(subID) == 3
-%     choice_rts = [];
-%     for i=1:3
-%         subID_temp = [subID,'-',num2str(i)];
-%         for run=1:5
-%             temp_file = ['logs/choice_run',num2str(run),'_sub_',subID_temp,'_time.mat'];
-%             load(temp_file)
-%             rts_temp = time_DEC(:,2) - time_DEC(:,1);
-%             choice_rts = [choice_rts; rts_temp];
-%         end
-%     end
-% end
-% 
-% subplot(3,1,3)
-% histogram(choice_rts,50)
-% title(sprintf('Reaction Times for fMRI Choice Trials - Subject %s',subID),'FontSize',12)
-% xlabel('RT')
-% ylabel('Count')
+%plot choice behavior
+if str2num(subID(1:3)) >= 100 && length(subID) == 5
+    run_num = 1;
+    file_name= ['choice_run',num2str(run_num),'_sub_',subID];
+
+    load(['logs/',file_name]);
+    item_list = item;
+    choice_list = choice;
+
+    for run=2:5
+        file_name= ['choice_run',num2str(run),'_sub_',subID];
+        load(['logs/',file_name]);
+        item_list = [item_list; item];
+        choice_list = [choice_list; choice];
+    end
+
+    %where was there no response
+    no_response = find(choice_list > 1);
+    choice_list(no_response) = 2;
+    num_missed = size(find(choice_list == 2), 1);
+
+    fig3 = figure;
+    histogram(choice_list)
+    title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
+    set(gca,'XTick',[0:1:2])
+    xlabel('0: Money 1: Item')
+    ylabel('Count')
+    text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
+elseif str2num(subID(1:3)) >= 100 && length(subID) == 3
+    item_list = [];
+    choice_list = [];
+    for day=1:3
+        subID_temp = [subID,'-',num2str(day)];
+        
+        for run=1:5
+            file_name= ['choice_run',num2str(run),'_sub_',subID_temp];
+            load(['logs/',file_name]);
+            item_list = [item_list; item];
+            choice_list = [choice_list; choice];
+        end
+        
+        %where was there no response
+        no_response = find(choice_list > 1);
+        choice_list(no_response) = 2;
+        num_missed = size(find(choice_list == 2), 1);
+    end
+    fig3 = figure;
+    histogram(choice_list)
+    title(sprintf('Choices vs Reference Money - Subject %s',subID),'FontSize',18)
+    set(gca,'XTick',[0:1:2])
+    xlabel('0: Money 1: Item')
+    ylabel('Count')
+    text(1.65,10,sprintf('Num Missed Trials: %d', num_missed));
+end
+
+%reaction times
+%load single item timing data
+if length(subID) == 5
+    temp_file = ['logs/bdm_items_sub_',subID,'_time.mat'];
+    load(temp_file)
+    item_rts = time_DEC(:,2) - time_DEC(:,1);
+elseif length(subID) == 3
+    item_rts = [];
+    for i=1:3
+        subID_temp = [subID,'-',num2str(i)];
+        temp_file = ['logs/bdm_items_sub_',subID_temp,'_time.mat'];
+        load(temp_file)
+        rts_temp = time_DEC(:,2) - time_DEC(:,1);
+        item_rts = [item_rts; rts_temp];
+    end
+end
+
+fig4 = figure;
+subplot(3,1,1)
+histogram(item_rts,50)
+title(sprintf('Reaction Times for Single Item WTP Bid Trials - Subject %s',subID),'FontSize',12)
+xlabel('RT')
+ylabel('Count')
+
+%load bundle timing data
+if length(subID) == 5
+    temp_file = ['logs/bdm_bundle_sub_',subID,'_time.mat'];
+    load(temp_file)
+    bundle_rts = time_DEC(:,2) - time_DEC(:,1);
+elseif length(subID) == 3
+    bundle_rts = [];
+    for i=1:3
+        subID_temp = [subID,'-',num2str(i)];
+        temp_file = ['logs/bdm_bundle_sub_',subID_temp,'_time.mat'];
+        load(temp_file)
+        rts_temp = time_DEC(:,2) - time_DEC(:,1);
+        bundle_rts = [bundle_rts; rts_temp];
+    end
+end
+
+subplot(3,1,2)
+histogram(bundle_rts,50)
+title(sprintf('Reaction Times for Bundle WTP Bid Trials - Subject %s',subID),'FontSize',12)
+xlabel('RT')
+ylabel('Count')
+
+%load fmri choice timing data
+if length(subID) == 5
+    choice_rts = [];
+    for run=1:5
+        temp_file = ['logs/choice_run',num2str(run),'_sub_',subID,'_time.mat'];
+        load(temp_file)
+        rts_temp = time_DEC(:,2) - time_DEC(:,1);
+        choice_rts = [choice_rts; rts_temp];
+    end
+elseif length(subID) == 3
+    choice_rts = [];
+    for i=1:3
+        subID_temp = [subID,'-',num2str(i)];
+        for run=1:5
+            temp_file = ['logs/choice_run',num2str(run),'_sub_',subID_temp,'_time.mat'];
+            load(temp_file)
+            rts_temp = time_DEC(:,2) - time_DEC(:,1);
+            choice_rts = [choice_rts; rts_temp];
+        end
+    end
+end
+
+subplot(3,1,3)
+histogram(choice_rts,50)
+title(sprintf('Reaction Times for fMRI Choice Trials - Subject %s',subID),'FontSize',12)
+xlabel('RT')
+ylabel('Count')
     
