@@ -18,7 +18,7 @@ import pandas as pd
 log_folder = '/Users/logancross/Documents/Bundle_Value/stim_presentation/Bundles_fMRI/logs/'
 
 #can analyze one day or across all day
-subID = '114'
+subID = '101'
 
 #linear model intercept
 intercept = True

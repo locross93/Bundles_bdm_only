@@ -4,8 +4,8 @@ clc;
 
 %Specify script parameters
 %which subjects to analyze
-subID_cell = {'101-1','102-1','103-1','104-1','105-1','106-1'...
-    ,'107-1','108-1','109-1','110-1','111-1','112-1','113-1','114-1'}; 
+subID_cell = {'101','102','103','104','105','106'...
+    ,'107','108','109','110','111','112','113','114'}; 
 
 y = [];
 X_full = [];
@@ -63,6 +63,20 @@ lme = fitlme(tbl,'BundleValue ~ 1 + LItemValue + RItemValue + (-1 + RItemValue|S
 [B,Bnames,stats] = randomEffects(lme);
 temp_subjs = 5:12;
 rfx_tbl_betas = table(temp_subjs',B(17:24)+beta(1),B(9:16)+beta(2),B(1:8)+beta(3),'VariableNames',{'Subject','Intercept','LItemCoef','RItemCoef'});
+
+%plot bundle value vs sum of individual values
+fig2 = figure;
+sum_of_values = sum(X_full,2);
+%plot(sum_of_values,bdm_bundle_value,'.','MarkerSize',20);
+y = binscatter(sum_of_values,y,[20 20]);
+colormap(gca,'parula')
+hold on
+plot((0:.01:20), (0:.01:20),'MarkerSize',10);
+xlabel('Value of Sum of Individual Item Values','FontSize',16);
+ylabel('Bundle Value','FontSize',16);
+title(sprintf('Bundle Value vs. Linear Sum - All Subjects'),'FontSize',18);
+xlim([0 20])
+ylim([0 20]);
 
 %food and trinket regression
 % y = [];
